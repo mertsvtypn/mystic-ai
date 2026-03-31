@@ -8,422 +8,220 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0a0612;
-      --surface: #120d1e;
-      --border: rgba(180, 140, 255, 0.15);
-      --purple: #9b6dff;
-      --purple-light: #c4a0ff;
-      --gold: #d4af70;
-      --gold-light: #f0d090;
-      --text: #e8e0f0;
-      --muted: #8878a0;
+      --bg: #0a0612; --surface: #120d1e; --border: rgba(180,140,255,0.15);
+      --purple: #9b6dff; --purple-light: #c4a0ff; --gold: #d4af70; --gold-light: #f0d090;
+      --text: #e8e0f0; --muted: #8878a0;
     }
-
-    html, body {
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 18px;
-      line-height: 1.7;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 20%, rgba(100, 50, 180, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(60, 20, 120, 0.1) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .stars {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      background: white;
-      animation: twinkle var(--d, 3s) ease-in-out infinite;
-      animation-delay: var(--delay, 0s);
-      opacity: var(--op, 0.4);
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: var(--op, 0.4); transform: scale(1); }
-      50% { opacity: 0.1; transform: scale(0.5); }
-    }
-
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: 'Crimson Pro', Georgia, serif; font-size: 18px; line-height: 1.7; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 20%, rgba(100,50,180,0.12) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 80% 80%, rgba(60,20,120,0.1) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: white; animation: twinkle var(--d, 3s) ease-in-out infinite; animation-delay: var(--delay, 0s); opacity: var(--op, 0.4); }
+    @keyframes twinkle { 0%,100%{opacity:var(--op,0.4);transform:scale(1)}50%{opacity:0.1;transform:scale(0.5)} }
+    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
+    @keyframes pulse-orb { 0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(124,58,237,0.4)}50%{transform:scale(1.1);box-shadow:0 0 40px rgba(124,58,237,0.6)} }
+    @keyframes fade-in { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
     .page { position: relative; z-index: 1; }
 
-    /* ── LANDING ── */
-    #landing {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
+    /* LANG TOGGLE */
+    .lang-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; display: flex; gap: 4px; background: rgba(18,13,30,0.9); border: 1px solid var(--border); border-radius: 20px; padding: 4px; }
+    .lang-btn { padding: 4px 12px; border-radius: 16px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'Cinzel', serif; letter-spacing: 0.05em; transition: all 0.2s; }
+    .lang-btn.active { background: var(--purple); color: white; }
 
-    .orb {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060);
-      margin: 0 auto 2rem;
-      position: relative;
-      animation: float 6s ease-in-out infinite;
-      box-shadow:
-        0 0 40px rgba(124, 58, 237, 0.4),
-        0 0 80px rgba(124, 58, 237, 0.15),
-        inset 0 0 30px rgba(255,255,255,0.1);
-    }
+    /* LANDING */
+    #landing { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.5rem 2rem; text-align: center; }
+    .orb { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060); margin: 0 auto 1.5rem; animation: float 6s ease-in-out infinite; box-shadow: 0 0 40px rgba(124,58,237,0.4), 0 0 80px rgba(124,58,237,0.15), inset 0 0 30px rgba(255,255,255,0.1); position: relative; }
+    .orb::after { content: ''; position: absolute; top: 15%; left: 20%; width: 30%; height: 20%; border-radius: 50%; background: rgba(255,255,255,0.25); filter: blur(4px); }
+    .logo { font-family: 'Cinzel', serif; font-size: clamp(2rem,6vw,3.2rem); font-weight: 600; letter-spacing: 0.08em; background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
+    .tagline { font-size: 1rem; color: var(--muted); font-style: italic; margin-bottom: 1.5rem; }
 
-    .orb::after {
-      content: '';
-      position: absolute;
-      top: 15%;
-      left: 20%;
-      width: 30%;
-      height: 20%;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.25);
-      filter: blur(4px);
-    }
+    /* CATEGORY TABS */
+    .cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; }
+    .cat-tab { padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--muted); font-family: 'Crimson Pro', serif; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .cat-tab:hover { border-color: var(--purple); color: var(--purple-light); }
+    .cat-tab.active { border-color: var(--purple); background: rgba(155,109,255,0.15); color: var(--purple-light); }
+    .cat-tab .cat-icon { margin-right: 4px; }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
+    .form-card { width: 100%; max-width: 500px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
+    .field { margin-bottom: 1.25rem; }
+    .field label { display: block; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .field input, .field textarea, .field select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 1rem; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 1rem; transition: border-color 0.2s; outline: none; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: rgba(155,109,255,0.5); background: rgba(155,109,255,0.05); }
+    .field select option { background: #120d1e; }
+    .field textarea { resize: none; height: 75px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .logo {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(2rem, 6vw, 3.5rem);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--purple-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
-    }
-
-    .tagline {
-      font-size: 1.1rem;
-      color: var(--muted);
-      font-style: italic;
-      margin-bottom: 3rem;
-      letter-spacing: 0.02em;
-    }
-
-    .form-card {
-      width: 100%;
-      max-width: 480px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-    }
-
-    .field { margin-bottom: 1.5rem; }
-
-    .field label {
-      display: block;
-      font-family: 'Cinzel', serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    .field input, .field textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      color: var(--text);
-      font-family: 'Crimson Pro', serif;
-      font-size: 1rem;
-      transition: border-color 0.2s;
-      outline: none;
-    }
-
-    .field input:focus, .field textarea:focus {
-      border-color: rgba(155, 109, 255, 0.5);
-      background: rgba(155, 109, 255, 0.05);
-    }
-
-    .field textarea { resize: none; height: 80px; }
-
-    .sign-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .sign-btn {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 4px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      color: var(--muted);
-      font-family: 'Crimson Pro', serif;
-    }
-
+    .sign-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+    .sign-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--muted); font-family: 'Crimson Pro', serif; }
     .sign-btn:hover { border-color: var(--purple); color: var(--purple-light); }
-
-    .sign-btn.active {
-      border-color: var(--purple);
-      background: rgba(155, 109, 255, 0.15);
-      color: var(--purple-light);
-    }
-
+    .sign-btn.active { border-color: var(--purple); background: rgba(155,109,255,0.15); color: var(--purple-light); }
     .sign-btn .icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
-    .sign-btn .name { font-size: 0.65rem; letter-spacing: 0.05em; }
+    .sign-btn .name { font-size: 0.6rem; letter-spacing: 0.03em; }
 
-    .free-note {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 1rem;
-      font-style: italic;
-    }
+    /* COFFEE UPLOAD */
+    .upload-area { border: 1px dashed rgba(155,109,255,0.4); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .upload-area:hover { border-color: var(--purple); background: rgba(155,109,255,0.05); }
+    .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-text { font-size: 0.9rem; color: var(--muted); }
+    .upload-text span { color: var(--purple-light); }
+    .photo-previews { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+    .photo-thumb { aspect-ratio: 1; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--border); }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-thumb .remove-btn { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); border: none; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    .cta {
-      width: 100%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #7c3aed, #5b21b6);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-family: 'Cinzel', serif;
-      font-size: 0.9rem;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
+    .free-note { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
+    .cta { width: 100%; padding: 1rem; background: linear-gradient(135deg,#7c3aed,#5b21b6); border: none; border-radius: 12px; color: white; font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+    .cta::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,0.1),transparent); opacity: 0; transition: opacity 0.2s; }
     .cta:hover::before { opacity: 1; }
     .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
-    .cta:active { transform: translateY(0); }
-    .cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ── RESULT ── */
-    #result { display: none; min-height: 100vh; padding: 3rem 1.5rem; }
-
-    .result-inner { max-width: 520px; margin: 0 auto; }
-
-    .result-header { text-align: center; margin-bottom: 2.5rem; }
-
-    .result-orb {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060);
-      margin: 0 auto 1rem;
-      box-shadow: 0 0 30px rgba(124,58,237,0.4);
-      animation: float 6s ease-in-out infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-    }
-
-    .result-title {
-      font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
-      color: var(--gold-light);
-      margin-bottom: 0.3rem;
-    }
-
-    .result-subtitle { font-size: 0.9rem; color: var(--muted); font-style: italic; }
-
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 1.5rem 0;
-    }
-
-    .section-title {
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-
-    .section-text {
-      font-size: 1.05rem;
-      color: var(--text);
-      line-height: 1.8;
-      font-weight: 300;
-    }
-
-    .prophecy {
-      background: rgba(155, 109, 255, 0.08);
-      border: 1px solid rgba(155, 109, 255, 0.2);
-      border-radius: 12px;
-      padding: 1.2rem 1.5rem;
-      font-style: italic;
-      color: var(--purple-light);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      text-align: center;
-    }
-
+    /* RESULT */
+    #result { display: none; min-height: 100vh; padding: 3rem 1.5rem; animation: fade-in 0.5s ease; }
+    .result-inner { max-width: 540px; margin: 0 auto; }
+    .result-header { text-align: center; margin-bottom: 2rem; }
+    .result-orb { width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060); margin: 0 auto 1rem; box-shadow: 0 0 30px rgba(124,58,237,0.4); animation: float 6s ease-in-out infinite; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .result-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--gold-light); margin-bottom: 0.3rem; }
+    .result-subtitle { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+    .divider { height: 1px; background: linear-gradient(90deg,transparent,var(--border),transparent); margin: 1.25rem 0; }
+    .section-title { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .section-text { font-size: 1rem; color: var(--text); line-height: 1.8; font-weight: 300; }
+    .prophecy { background: rgba(155,109,255,0.08); border: 1px solid rgba(155,109,255,0.2); border-radius: 12px; padding: 1.2rem 1.5rem; font-style: italic; color: var(--purple-light); font-size: 1rem; line-height: 1.8; text-align: center; }
     .loading-section { text-align: center; padding: 2rem 0; }
-
-    .loading-orb {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed);
-      margin: 0 auto 1.5rem;
-      animation: pulse-orb 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse-orb {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(124,58,237,0.4); }
-      50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(124,58,237,0.6); }
-    }
-
-    .loading-text {
-      font-family: 'Cinzel', serif;
-      font-size: 0.8rem;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      animation: fade-text 2s ease-in-out infinite;
-    }
-
-    @keyframes fade-text {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
-    }
-
+    .loading-orb { width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle at 35% 30%,#c084fc,#7c3aed); margin: 0 auto 1.5rem; animation: pulse-orb 1.5s ease-in-out infinite; }
+    .loading-text { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.15em; color: var(--muted); animation: twinkle 2s ease-in-out infinite; }
     .action-row { display: flex; gap: 10px; margin-top: 1.5rem; }
-
-    .btn-secondary {
-      flex: 1;
-      padding: 0.75rem;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--muted);
-      font-family: 'Crimson Pro', serif;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
+    .btn-secondary { flex: 1; padding: 0.75rem; background: transparent; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-family: 'Crimson Pro', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
     .btn-secondary:hover { border-color: var(--purple); color: var(--purple-light); }
-
-    .btn-primary-sm {
-      flex: 1;
-      padding: 0.75rem;
-      background: linear-gradient(135deg, #7c3aed, #5b21b6);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-family: 'Cinzel', serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
+    .btn-primary-sm { flex: 1; padding: 0.75rem; background: linear-gradient(135deg,#7c3aed,#5b21b6); border: none; border-radius: 10px; color: white; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; }
     .btn-primary-sm:hover { opacity: 0.9; }
+    .disclaimer { text-align: center; font-size: 0.75rem; color: var(--muted); font-style: italic; margin-top: 2rem; opacity: 0.6; }
 
-    .disclaimer {
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-style: italic;
-      margin-top: 2rem;
-      opacity: 0.6;
-    }
+    /* HIDDEN SECTIONS */
+    .cat-section { display: none; }
+    .cat-section.active { display: block; }
 
-    @media (max-width: 480px) {
-      .form-card { padding: 1.5rem; }
-      .sign-grid { grid-template-columns: repeat(4, 1fr); }
-    }
+    @media(max-width:480px) { .form-card{padding:1.25rem} .row-2{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
-
 <div class="stars" id="stars"></div>
 
-<div class="page">
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('tr')">TR</button>
+</div>
 
+<div class="page">
   <!-- LANDING -->
   <section id="landing">
     <div class="orb"></div>
     <h1 class="logo">Mystic AI</h1>
-    <p class="tagline">The stars have been waiting for you</p>
+    <p class="tagline" data-en="The stars have been waiting for you" data-tr="Yıldızlar seni bekliyordu"></p>
+
+    <!-- CATEGORY TABS -->
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="zodiac" onclick="selectCat(this)"><span class="cat-icon">✦</span><span data-en="Zodiac" data-tr="Burç"></span></button>
+      <button class="cat-tab" data-cat="tarot" onclick="selectCat(this)"><span class="cat-icon">🃏</span><span data-en="Tarot" data-tr="Tarot"></span></button>
+      <button class="cat-tab" data-cat="numerology" onclick="selectCat(this)"><span class="cat-icon">🔢</span><span data-en="Numerology" data-tr="Numeroloji"></span></button>
+      <button class="cat-tab" data-cat="dream" onclick="selectCat(this)"><span class="cat-icon">🌙</span><span data-en="Dream" data-tr="Rüya"></span></button>
+      <button class="cat-tab" data-cat="coffee" onclick="selectCat(this)"><span class="cat-icon">☕</span><span data-en="Coffee" data-tr="Kahve Falı"></span></button>
+    </div>
 
     <div class="form-card">
+      <!-- COMMON FIELDS -->
       <div class="field">
-        <label>Your name</label>
-        <input id="name" type="text" placeholder="e.g. Sarah" autocomplete="off" />
+        <label data-en="Your name" data-tr="Adın"></label>
+        <input id="name" type="text" autocomplete="off" />
       </div>
 
-      <div class="field">
-        <label>Your sign</label>
-        <div class="sign-grid" id="sign-grid">
-          <button class="sign-btn" data-sign="Aries"><span class="icon">♈</span><span class="name">Aries</span></button>
-          <button class="sign-btn" data-sign="Taurus"><span class="icon">♉</span><span class="name">Taurus</span></button>
-          <button class="sign-btn" data-sign="Gemini"><span class="icon">♊</span><span class="name">Gemini</span></button>
-          <button class="sign-btn" data-sign="Cancer"><span class="icon">♋</span><span class="name">Cancer</span></button>
-          <button class="sign-btn" data-sign="Leo"><span class="icon">♌</span><span class="name">Leo</span></button>
-          <button class="sign-btn" data-sign="Virgo"><span class="icon">♍</span><span class="name">Virgo</span></button>
-          <button class="sign-btn" data-sign="Libra"><span class="icon">♎</span><span class="name">Libra</span></button>
-          <button class="sign-btn" data-sign="Scorpio"><span class="icon">♏</span><span class="name">Scorpio</span></button>
-          <button class="sign-btn" data-sign="Sagittarius"><span class="icon">♐</span><span class="name">Sagitt.</span></button>
-          <button class="sign-btn" data-sign="Capricorn"><span class="icon">♑</span><span class="name">Capric.</span></button>
-          <button class="sign-btn" data-sign="Aquarius"><span class="icon">♒</span><span class="name">Aquar.</span></button>
-          <button class="sign-btn" data-sign="Pisces"><span class="icon">♓</span><span class="name">Pisces</span></button>
+      <!-- ZODIAC -->
+      <div class="cat-section active" id="sec-zodiac">
+        <div class="field">
+          <label data-en="Your zodiac sign" data-tr="Burcun"></label>
+          <div class="sign-grid" id="sign-grid">
+            <button class="sign-btn" data-sign="Aries"><span class="icon">♈</span><span class="name" data-en="Aries" data-tr="Koç"></span></button>
+            <button class="sign-btn" data-sign="Taurus"><span class="icon">♉</span><span class="name" data-en="Taurus" data-tr="Boğa"></span></button>
+            <button class="sign-btn" data-sign="Gemini"><span class="icon">♊</span><span class="name" data-en="Gemini" data-tr="İkizler"></span></button>
+            <button class="sign-btn" data-sign="Cancer"><span class="icon">♋</span><span class="name" data-en="Cancer" data-tr="Yengeç"></span></button>
+            <button class="sign-btn" data-sign="Leo"><span class="icon">♌</span><span class="name" data-en="Leo" data-tr="Aslan"></span></button>
+            <button class="sign-btn" data-sign="Virgo"><span class="icon">♍</span><span class="name" data-en="Virgo" data-tr="Başak"></span></button>
+            <button class="sign-btn" data-sign="Libra"><span class="icon">♎</span><span class="name" data-en="Libra" data-tr="Terazi"></span></button>
+            <button class="sign-btn" data-sign="Scorpio"><span class="icon">♏</span><span class="name" data-en="Scorpio" data-tr="Akrep"></span></button>
+            <button class="sign-btn" data-sign="Sagittarius"><span class="icon">♐</span><span class="name" data-en="Sagitt." data-tr="Yay"></span></button>
+            <button class="sign-btn" data-sign="Capricorn"><span class="icon">♑</span><span class="name" data-en="Capric." data-tr="Oğlak"></span></button>
+            <button class="sign-btn" data-sign="Aquarius"><span class="icon">♒</span><span class="name" data-en="Aquar." data-tr="Kova"></span></button>
+            <button class="sign-btn" data-sign="Pisces"><span class="icon">♓</span><span class="name" data-en="Pisces" data-tr="Balık"></span></button>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label>Ask the universe (optional)</label>
-        <textarea id="question" placeholder="e.g. Will I find love this year? Should I change careers?"></textarea>
+      <!-- TAROT -->
+      <div class="cat-section" id="sec-tarot">
+        <div class="field">
+          <label data-en="What area of life?" data-tr="Hayatın hangi alanı?"></label>
+          <select id="tarot-area">
+            <option value="general" data-en="General reading" data-tr="Genel okuma"></option>
+            <option value="love" data-en="Love & relationships" data-tr="Aşk ve ilişkiler"></option>
+            <option value="career" data-en="Career & money" data-tr="Kariyer ve para"></option>
+            <option value="future" data-en="Near future" data-tr="Yakın gelecek"></option>
+          </select>
+        </div>
       </div>
 
-      <p class="free-note">✦ 3 free readings today ✦</p>
-      <button class="cta" id="cta-btn" onclick="startReading()">Reveal My Fortune</button>
-    </div>
+      <!-- NUMEROLOGY -->
+      <div class="cat-section" id="sec-numerology">
+        <div class="row-2">
+          <div class="field">
+            <label data-en="Birth date" data-tr="Doğum tarihi"></label>
+            <input id="birth-date" type="date" />
+          </div>
+          <div class="field">
+            <label data-en="Birth time (optional)" data-tr="Doğum saati (opsiyonel)"></label>
+            <input id="birth-time" type="time" />
+          </div>
+        </div>
+        <div class="field">
+          <label data-en="Birth city" data-tr="Doğum şehri"></label>
+          <input id="birth-city" type="text" placeholder="e.g. Istanbul" />
+        </div>
+      </div>
 
-    <p class="disclaimer">For entertainment purposes only</p>
+      <!-- DREAM -->
+      <div class="cat-section" id="sec-dream">
+        <div class="field">
+          <label data-en="Describe your dream" data-tr="Rüyanı anlat"></label>
+          <textarea id="dream-text" rows="4" style="height:100px"></textarea>
+        </div>
+      </div>
+
+      <!-- COFFEE -->
+      <div class="cat-section" id="sec-coffee">
+        <div class="field">
+          <label data-en="Upload coffee cup photos (max 6)" data-tr="Kahve fincanı fotoğrafları yükle (max 6)"></label>
+          <div class="upload-area" id="upload-area">
+            <input type="file" id="coffee-input" accept="image/*" multiple onchange="handlePhotos(this)" />
+            <div class="upload-icon">☕</div>
+            <div class="upload-text"><span data-en="Click or drag photos here" data-tr="Fotoğrafları buraya sürükle veya tıkla"></span><br><small data-en="Up to 6 photos" data-tr="En fazla 6 fotoğraf"></small></div>
+          </div>
+          <div class="photo-previews" id="photo-previews"></div>
+        </div>
+      </div>
+
+      <!-- COMMON QUESTION -->
+      <div class="field" id="question-field">
+        <label data-en="Ask the universe (optional)" data-tr="Evrene sor (opsiyonel)"></label>
+        <textarea id="question"></textarea>
+      </div>
+
+      <p class="free-note" data-en="✦ 3 free readings today ✦" data-tr="✦ Bugün 3 ücretsiz okuma ✦"></p>
+      <button class="cta" id="cta-btn" onclick="startReading()">
+        <span data-en="Reveal My Fortune" data-tr="Falımı Göster"></span>
+      </button>
+    </div>
+    <p class="disclaimer" data-en="For entertainment purposes only" data-tr="Yalnızca eğlence amaçlıdır"></p>
   </section>
 
   <!-- RESULT -->
@@ -434,125 +232,349 @@
         <h2 class="result-title" id="result-name">—</h2>
         <p class="result-subtitle" id="result-date">—</p>
       </div>
-
-      <div id="reading-content">
-        <div class="loading-section">
-          <div class="loading-orb"></div>
-          <p class="loading-text">Reading the cosmic vibrations...</p>
-        </div>
-      </div>
-
+      <div id="reading-content"></div>
       <div class="action-row" id="action-row" style="display:none;">
-        <button class="btn-secondary" onclick="resetForm()">Read again</button>
-        <button class="btn-primary-sm" onclick="shareReading()">Share reading</button>
+        <button class="btn-secondary" onclick="resetForm()" data-en="Read again" data-tr="Tekrar bak"></button>
+        <button class="btn-primary-sm" onclick="shareReading()" data-en="Share reading" data-tr="Paylaş"></button>
       </div>
-
-      <p class="disclaimer">✦ For entertainment purposes only ✦</p>
+      <p class="disclaimer" data-en="✦ For entertainment purposes only ✦" data-tr="✦ Yalnızca eğlence amaçlıdır ✦"></p>
     </div>
   </section>
-
 </div>
 
 <script>
-  // Stars
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 120; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;
-    starsEl.appendChild(s);
+// ── STATE ──
+let lang = 'en';
+let selectedSign = '';
+let selectedCat = 'zodiac';
+let coffeePhotos = [];
+
+const signIcons = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
+
+const T = {
+  en: {
+    nameRequired: 'Please enter your name',
+    signRequired: 'Please select your zodiac sign',
+    dreamRequired: 'Please describe your dream',
+    coffeeRequired: 'Please upload at least one coffee cup photo',
+    loading: ['Reading the cosmic vibrations...', 'The stars are aligning...', 'Consulting the ancient wisdom...', 'Peering into the mists of time...'],
+    readAgain: 'Read again',
+    share: 'Share reading',
+  },
+  tr: {
+    nameRequired: 'Lütfen adını gir',
+    signRequired: 'Lütfen burcunu seç',
+    dreamRequired: 'Lütfen rüyanı anlat',
+    coffeeRequired: 'Lütfen en az bir fotoğraf yükle',
+    loading: ['Kozmik titreşimler okunuyor...', 'Yıldızlar hizalanıyor...', 'Kaderin sırları açılıyor...', 'Zamanın sislerine bakılıyor...'],
+    readAgain: 'Tekrar bak',
+    share: 'Paylaş',
   }
+};
 
-  const signIcons = { Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋', Leo:'♌', Virgo:'♍', Libra:'♎', Scorpio:'♏', Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓' };
-  let selectedSign = '';
-
-  document.getElementById('sign-grid').addEventListener('click', e => {
-    const btn = e.target.closest('.sign-btn');
-    if (!btn) return;
-    document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedSign = btn.dataset.sign;
-  });
-
-  async function startReading() {
-    const name = document.getElementById('name').value.trim();
-    const question = document.getElementById('question').value.trim();
-    if (!name) { alert('Please enter your name'); return; }
-    if (!selectedSign) { alert('Please select your zodiac sign'); return; }
-
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('result-icon').textContent = signIcons[selectedSign];
-    document.getElementById('result-name').textContent = name + ' · ' + selectedSign;
-    document.getElementById('result-date').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('action-row').style.display = 'none';
-
-    document.getElementById('reading-content').innerHTML = `
-      <div class="loading-section">
-        <div class="loading-orb"></div>
-        <p class="loading-text">The stars are aligning for you...</p>
-      </div>`;
-
-    const prompt = `You are Mystic AI, a powerful and poetic AI fortune teller. Give a mystical fortune reading for ${name}, a ${selectedSign}.${question ? ` Their question: "${question}"` : ''}
-
-Respond ONLY with raw JSON, no markdown, no explanation:
-{
-  "overall": "2-3 sentences about their cosmic energy and current spiritual situation",
-  "love": "2 sentences about love, relationships, and matters of the heart",
-  "money": "2 sentences about finances, career, and material abundance",
-  "advice": "One powerful prophecy or mystical piece of advice — poetic and memorable"
+// ── STARS ──
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;
+  starsEl.appendChild(s);
 }
 
-Be dramatic, mystical, poetic. Use words like 'the cosmos', 'celestial', 'vibration', 'energy'. Be optimistic but mysterious.`;
-
-    try {
-      const res = await fetch('/api/fortune', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-      const data = await res.json();
-      const reading = JSON.parse(data.text.replace(/```json|```/g, '').trim());
-
-      document.getElementById('reading-content').innerHTML = `
-        <div class="divider"></div>
-        <div class="section-title">Overall energy</div>
-        <p class="section-text">${reading.overall}</p>
-        <div class="divider"></div>
-        <div class="section-title">Love & heart</div>
-        <p class="section-text">${reading.love}</p>
-        <div class="divider"></div>
-        <div class="section-title">Abundance & career</div>
-        <p class="section-text">${reading.money}</p>
-        <div class="divider"></div>
-        <div class="section-title">The prophecy</div>
-        <div class="prophecy">"${reading.advice}"</div>
-      `;
-      document.getElementById('action-row').style.display = 'flex';
-    } catch(e) {
-      document.getElementById('reading-content').innerHTML = `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">The cosmic connection was interrupted.<br>Please try again.</p>`;
-      document.getElementById('action-row').style.display = 'flex';
-    }
-  }
-
-  function resetForm() {
-    document.getElementById('result').style.display = 'none';
-    document.getElementById('landing').style.display = 'flex';
-    document.getElementById('name').value = '';
-    document.getElementById('question').value = '';
-    document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
-    selectedSign = '';
-  }
-
-  function shareReading() {
-    const text = document.getElementById('reading-content').innerText;
-    if (navigator.share) {
-      navigator.share({ title: 'My Mystic AI Reading', text: text, url: window.location.href });
+// ── LANG ──
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === l));
+  document.querySelectorAll('[data-en]').forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = el.dataset[l] || '';
     } else {
-      navigator.clipboard.writeText('My Mystic AI Reading:\n\n' + text + '\n\n' + window.location.href)
-        .then(() => alert('Copied to clipboard!'));
+      el.textContent = el.dataset[l] || '';
     }
+  });
+  document.documentElement.lang = l;
+}
+
+// ── CATEGORY ──
+function selectCat(btn) {
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCat = btn.dataset.cat;
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + selectedCat).classList.add('active');
+  // hide generic question for coffee (has its own)
+  document.getElementById('question-field').style.display = selectedCat === 'coffee' ? 'none' : 'block';
+}
+
+// ── SIGN SELECT ──
+document.getElementById('sign-grid').addEventListener('click', e => {
+  const btn = e.target.closest('.sign-btn');
+  if (!btn) return;
+  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedSign = btn.dataset.sign;
+});
+
+// ── PHOTOS ──
+function handlePhotos(input) {
+  const files = Array.from(input.files).slice(0, 6 - coffeePhotos.length);
+  files.forEach(file => {
+    if (coffeePhotos.length >= 6) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      coffeePhotos.push({ dataUrl: e.target.result, file });
+      renderPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderPreviews() {
+  const container = document.getElementById('photo-previews');
+  container.innerHTML = coffeePhotos.map((p, i) => `
+    <div class="photo-thumb">
+      <img src="${p.dataUrl}" alt="coffee ${i+1}" />
+      <button class="remove-btn" onclick="removePhoto(${i})">×</button>
+    </div>`).join('');
+}
+
+function removePhoto(i) {
+  coffeePhotos.splice(i, 1);
+  renderPreviews();
+}
+
+// ── BUILD PROMPT ──
+function buildPrompt(name, question) {
+  const isTR = lang === 'tr';
+  const langNote = isTR ? 'Respond entirely in Turkish.' : 'Respond in English.';
+
+  if (selectedCat === 'zodiac') {
+    return `You are Mystic AI, a powerful and poetic AI fortune teller. Give a mystical fortune reading for ${name}, a ${selectedSign}.${question ? ` Their question: "${question}"` : ''}
+${langNote}
+Respond ONLY with raw JSON, no markdown:
+{"overall":"2-3 sentences about cosmic energy","love":"2 sentences about love","money":"2 sentences about finances and career","advice":"One powerful prophecy — poetic and memorable"}
+Be dramatic, mystical, poetic. Mix optimism with mystery.`;
   }
+
+  if (selectedCat === 'tarot') {
+    const area = document.getElementById('tarot-area').value;
+    return `You are Mystic AI, a master tarot reader. Draw 3 virtual tarot cards for ${name} regarding their ${area}. ${question ? `Their question: "${question}"` : ''}
+${langNote}
+Respond ONLY with raw JSON:
+{"card1":{"name":"card name","position":"Past","meaning":"2 sentences"},"card2":{"name":"card name","position":"Present","meaning":"2 sentences"},"card3":{"name":"card name","position":"Future","meaning":"2 sentences"},"overall":"2 sentences synthesizing all three cards","advice":"One final prophecy"}`;
+  }
+
+  if (selectedCat === 'numerology') {
+    const bd = document.getElementById('birth-date').value;
+    const bt = document.getElementById('birth-time').value;
+    const bc = document.getElementById('birth-city').value;
+    return `You are Mystic AI, a numerology expert. Calculate and interpret the numerology reading for ${name}, born on ${bd}${bt ? ' at ' + bt : ''}${bc ? ' in ' + bc : ''}.
+${langNote}
+Respond ONLY with raw JSON:
+{"lifePathNumber":{"number":"X","meaning":"2-3 sentences"},"destinyNumber":{"number":"X","meaning":"2 sentences"},"soulNumber":{"number":"X","meaning":"2 sentences"},"advice":"One powerful numerological prophecy"}`;
+  }
+
+  if (selectedCat === 'dream') {
+    const dream = document.getElementById('dream-text').value;
+    return `You are Mystic AI, a dream interpreter with ancient wisdom. Interpret this dream for ${name}: "${dream}"
+${langNote}
+Respond ONLY with raw JSON:
+{"symbols":"2-3 sentences about the key dream symbols","subconscious":"2 sentences about what the subconscious is communicating","guidance":"2 sentences of spiritual guidance","prophecy":"One powerful dream prophecy"}`;
+  }
+
+  return '';
+}
+
+// ── BUILD MESSAGES (with images for coffee) ──
+async function buildMessages(name) {
+  if (selectedCat === 'coffee') {
+    const isTR = lang === 'tr';
+    const langNote = isTR ? 'Respond entirely in Turkish.' : 'Respond in English.';
+    const question = document.getElementById('question') ? document.getElementById('question').value : '';
+    const content = [
+      ...coffeePhotos.map(p => ({
+        type: 'image',
+        source: { type: 'base64', media_type: 'image/jpeg', data: p.dataUrl.split(',')[1] }
+      })),
+      { type: 'text', text: `You are Mystic AI, a legendary Turkish coffee cup reader (tasseography expert). Analyze these coffee cup photos for ${name}.${question ? ` Their question: "${question}"` : ''}
+${langNote}
+Respond ONLY with raw JSON:
+{"symbols":"Describe the shapes and symbols you see in the coffee grounds (2-3 sentences)","past":"What the cup reveals about the past (2 sentences)","present":"Current energy and situation (2 sentences)","future":"What the future holds based on the grounds (2-3 sentences)","prophecy":"One powerful Turkish coffee prophecy"}` }
+    ];
+    return [{ role: 'user', content }];
+  }
+  const prompt = buildPrompt(name, document.getElementById('question')?.value || '');
+  return [{ role: 'user', content: prompt }];
+}
+
+// ── RENDER RESULT ──
+function renderResult(data, cat) {
+  try {
+    const r = JSON.parse(data.replace(/```json|```/g, '').trim());
+    const isTR = lang === 'tr';
+
+    if (cat === 'zodiac') {
+      return `
+        <div class="divider"></div>
+        <div class="section-title">${isTR ? 'Genel Enerji' : 'Overall energy'}</div>
+        <p class="section-text">${r.overall}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Aşk' : 'Love & heart'}</div>
+        <p class="section-text">${r.love}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Para & Kariyer' : 'Abundance & career'}</div>
+        <p class="section-text">${r.money}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
+        <div class="prophecy">"${r.advice}"</div>`;
+    }
+
+    if (cat === 'tarot') {
+      return `
+        <div class="divider"></div>
+        ${['card1','card2','card3'].map(k => `
+          <div class="section-title">${r[k].position} — ${r[k].name}</div>
+          <p class="section-text">${r[k].meaning}</p>
+          <div class="divider"></div>`).join('')}
+        <div class="section-title">${isTrue ? 'Genel Mesaj' : 'Overall message'}</div>
+        <p class="section-text">${r.overall}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
+        <div class="prophecy">"${r.advice}"</div>`;
+    }
+
+    if (cat === 'numerology') {
+      return `
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Yaşam Yolu Sayısı' : 'Life path number'}: ${r.lifePathNumber.number}</div>
+        <p class="section-text">${r.lifePathNumber.meaning}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kader Sayısı' : 'Destiny number'}: ${r.destinyNumber.number}</div>
+        <p class="section-text">${r.destinyNumber.meaning}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Ruh Sayısı' : 'Soul number'}: ${r.soulNumber.number}</div>
+        <p class="section-text">${r.soulNumber.meaning}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
+        <div class="prophecy">"${r.advice}"</div>`;
+    }
+
+    if (cat === 'dream') {
+      return `
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Semboller' : 'Dream symbols'}</div>
+        <p class="section-text">${r.symbols}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Bilinçaltı' : 'Subconscious message'}</div>
+        <p class="section-text">${r.subconscious}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Rehberlik' : 'Spiritual guidance'}</div>
+        <p class="section-text">${r.guidance}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
+        <div class="prophecy">"${r.prophecy}"</div>`;
+    }
+
+    if (cat === 'coffee') {
+      return `
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Görülen Semboller' : 'Symbols in the cup'}</div>
+        <p class="section-text">${r.symbols}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Geçmiş' : 'The past'}</div>
+        <p class="section-text">${r.past}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Şu An' : 'Present energy'}</div>
+        <p class="section-text">${r.present}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Gelecek' : 'What awaits you'}</div>
+        <p class="section-text">${r.future}</p>
+        <div class="divider"></div>
+        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
+        <div class="prophecy">"${r.prophecy}"</div>`;
+    }
+  } catch(e) {
+    return `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Bağlantı kesildi, tekrar dene.':'The cosmic connection was interrupted. Please try again.'}</p>`;
+  }
+}
+
+// ── START READING ──
+async function startReading() {
+  const name = document.getElementById('name').value.trim();
+  if (!name) { alert(T[lang].nameRequired); return; }
+  if (selectedCat === 'zodiac' && !selectedSign) { alert(T[lang].signRequired); return; }
+  if (selectedCat === 'dream' && !document.getElementById('dream-text').value.trim()) { alert(T[lang].dreamRequired); return; }
+  if (selectedCat === 'coffee' && coffeePhotos.length === 0) { alert(T[lang].coffeeRequired); return; }
+
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo(0,0);
+
+  const catIcons = { zodiac: signIcons[selectedSign] || '✦', tarot: '🃏', numerology: '🔢', dream: '🌙', coffee: '☕' };
+  document.getElementById('result-icon').textContent = catIcons[selectedCat];
+  document.getElementById('result-name').textContent = name + (selectedSign ? ' · ' + selectedSign : '');
+  document.getElementById('result-date').textContent = new Date().toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('action-row').style.display = 'none';
+
+  const loadingTexts = T[lang].loading;
+  let loadIdx = 0;
+  const loadingInterval = setInterval(() => { loadIdx = (loadIdx+1) % loadingTexts.length; const lt = document.getElementById('loading-msg'); if(lt) lt.textContent = loadingTexts[loadIdx]; }, 2000);
+
+  document.getElementById('reading-content').innerHTML = `
+    <div class="loading-section">
+      <div class="loading-orb"></div>
+      <p class="loading-text" id="loading-msg">${loadingTexts[0]}</p>
+    </div>`;
+
+  try {
+    const messages = await buildMessages(name);
+    const res = await fetch('/api/fortune', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, hasCoffeeImages: selectedCat === 'coffee' })
+    });
+    const data = await res.json();
+    clearInterval(loadingInterval);
+    const html = renderResult(data.text, selectedCat);
+    document.getElementById('reading-content').innerHTML = html;
+    document.getElementById('action-row').style.display = 'flex';
+    document.querySelector('#action-row .btn-secondary').textContent = T[lang].readAgain;
+    document.querySelector('#action-row .btn-primary-sm').textContent = T[lang].share;
+  } catch(e) {
+    clearInterval(loadingInterval);
+    document.getElementById('reading-content').innerHTML = `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Bağlantı kesildi, tekrar dene.':'Connection lost. Please try again.'}</p>`;
+    document.getElementById('action-row').style.display = 'flex';
+  }
+}
+
+function resetForm() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+  coffeePhotos = [];
+  document.getElementById('photo-previews').innerHTML = '';
+  document.getElementById('name').value = '';
+  if(document.getElementById('question')) document.getElementById('question').value = '';
+  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+  selectedSign = '';
+  window.scrollTo(0,0);
+}
+
+function shareReading() {
+  const text = document.getElementById('reading-content').innerText;
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'Mystic AI Reading', text, url });
+  } else {
+    navigator.clipboard.writeText('My Mystic AI Reading:\n\n' + text + '\n\n' + url)
+      .then(() => alert(lang === 'tr' ? 'Kopyalandı!' : 'Copied!'));
+  }
+}
+
+// Init lang
+setLang('en');
+// Fix isTrue references in renderResult
+const isTrue = false;
 </script>
 </body>
 </html>
