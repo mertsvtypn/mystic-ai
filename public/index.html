@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mystic AI — Your Fortune Awaits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0612;
+      --surface: #120d1e;
+      --border: rgba(180, 140, 255, 0.15);
+      --purple: #9b6dff;
+      --purple-light: #c4a0ff;
+      --gold: #d4af70;
+      --gold-light: #f0d090;
+      --text: #e8e0f0;
+      --muted: #8878a0;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 20%, rgba(100, 50, 180, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(60, 20, 120, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d, 3s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      opacity: var(--op, 0.4);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--op, 0.4); transform: scale(1); }
+      50% { opacity: 0.1; transform: scale(0.5); }
+    }
+
+    .page { position: relative; z-index: 1; }
+
+    /* ── LANDING ── */
+    #landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060);
+      margin: 0 auto 2rem;
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+      box-shadow:
+        0 0 40px rgba(124, 58, 237, 0.4),
+        0 0 80px rgba(124, 58, 237, 0.15),
+        inset 0 0 30px rgba(255,255,255,0.1);
+    }
+
+    .orb::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 30%;
+      height: 20%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      filter: blur(4px);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .logo {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--purple-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+    }
+
+    .field { margin-bottom: 1.5rem; }
+
+    .field label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .field input, .field textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'Crimson Pro', serif;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .field input:focus, .field textarea:focus {
+      border-color: rgba(155, 109, 255, 0.5);
+      background: rgba(155, 109, 255, 0.05);
+    }
+
+    .field textarea { resize: none; height: 80px; }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .sign-btn {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      color: var(--muted);
+      font-family: 'Crimson Pro', serif;
+    }
+
+    .sign-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+
+    .sign-btn.active {
+      border-color: var(--purple);
+      background: rgba(155, 109, 255, 0.15);
+      color: var(--purple-light);
+    }
+
+    .sign-btn .icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
+    .sign-btn .name { font-size: 0.65rem; letter-spacing: 0.05em; }
+
+    .free-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .cta {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .cta:hover::before { opacity: 1; }
+    .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
+    .cta:active { transform: translateY(0); }
+    .cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ── RESULT ── */
+    #result { display: none; min-height: 100vh; padding: 3rem 1.5rem; }
+
+    .result-inner { max-width: 520px; margin: 0 auto; }
+
+    .result-header { text-align: center; margin-bottom: 2.5rem; }
+
+    .result-orb {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060);
+      margin: 0 auto 1rem;
+      box-shadow: 0 0 30px rgba(124,58,237,0.4);
+      animation: float 6s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .result-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      margin-bottom: 0.3rem;
+    }
+
+    .result-subtitle { font-size: 0.9rem; color: var(--muted); font-style: italic; }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-text {
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .prophecy {
+      background: rgba(155, 109, 255, 0.08);
+      border: 1px solid rgba(155, 109, 255, 0.2);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      font-style: italic;
+      color: var(--purple-light);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .loading-section { text-align: center; padding: 2rem 0; }
+
+    .loading-orb {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed);
+      margin: 0 auto 1.5rem;
+      animation: pulse-orb 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-orb {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(124,58,237,0.4); }
+      50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(124,58,237,0.6); }
+    }
+
+    .loading-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      animation: fade-text 2s ease-in-out infinite;
+    }
+
+    @keyframes fade-text {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    .action-row { display: flex; gap: 10px; margin-top: 1.5rem; }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--purple); color: var(--purple-light); }
+
+    .btn-primary-sm {
+      flex: 1;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary-sm:hover { opacity: 0.9; }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 2rem;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 480px) {
+      .form-card { padding: 1.5rem; }
+      .sign-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page">
+
+  <!-- LANDING -->
+  <section id="landing">
+    <div class="orb"></div>
+    <h1 class="logo">Mystic AI</h1>
+    <p class="tagline">The stars have been waiting for you</p>
+
+    <div class="form-card">
+      <div class="field">
+        <label>Your name</label>
+        <input id="name" type="text" placeholder="e.g. Sarah" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label>Your sign</label>
+        <div class="sign-grid" id="sign-grid">
+          <button class="sign-btn" data-sign="Aries"><span class="icon">♈</span><span class="name">Aries</span></button>
+          <button class="sign-btn" data-sign="Taurus"><span class="icon">♉</span><span class="name">Taurus</span></button>
+          <button class="sign-btn" data-sign="Gemini"><span class="icon">♊</span><span class="name">Gemini</span></button>
+          <button class="sign-btn" data-sign="Cancer"><span class="icon">♋</span><span class="name">Cancer</span></button>
+          <button class="sign-btn" data-sign="Leo"><span class="icon">♌</span><span class="name">Leo</span></button>
+          <button class="sign-btn" data-sign="Virgo"><span class="icon">♍</span><span class="name">Virgo</span></button>
+          <button class="sign-btn" data-sign="Libra"><span class="icon">♎</span><span class="name">Libra</span></button>
+          <button class="sign-btn" data-sign="Scorpio"><span class="icon">♏</span><span class="name">Scorpio</span></button>
+          <button class="sign-btn" data-sign="Sagittarius"><span class="icon">♐</span><span class="name">Sagitt.</span></button>
+          <button class="sign-btn" data-sign="Capricorn"><span class="icon">♑</span><span class="name">Capric.</span></button>
+          <button class="sign-btn" data-sign="Aquarius"><span class="icon">♒</span><span class="name">Aquar.</span></button>
+          <button class="sign-btn" data-sign="Pisces"><span class="icon">♓</span><span class="name">Pisces</span></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Ask the universe (optional)</label>
+        <textarea id="question" placeholder="e.g. Will I find love this year? Should I change careers?"></textarea>
+      </div>
+
+      <p class="free-note">✦ 3 free readings today ✦</p>
+      <button class="cta" id="cta-btn" onclick="startReading()">Reveal My Fortune</button>
+    </div>
+
+    <p class="disclaimer">For entertainment purposes only</p>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result">
+    <div class="result-inner">
+      <div class="result-header">
+        <div class="result-orb" id="result-icon">🔮</div>
+        <h2 class="result-title" id="result-name">—</h2>
+        <p class="result-subtitle" id="result-date">—</p>
+      </div>
+
+      <div id="reading-content">
+        <div class="loading-section">
+          <div class="loading-orb"></div>
+          <p class="loading-text">Reading the cosmic vibrations...</p>
+        </div>
+      </div>
+
+      <div class="action-row" id="action-row" style="display:none;">
+        <button class="btn-secondary" onclick="resetForm()">Read again</button>
+        <button class="btn-primary-sm" onclick="shareReading()">Share reading</button>
+      </div>
+
+      <p class="disclaimer">✦ For entertainment purposes only ✦</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;
+    starsEl.appendChild(s);
+  }
+
+  const signIcons = { Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋', Leo:'♌', Virgo:'♍', Libra:'♎', Scorpio:'♏', Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓' };
+  let selectedSign = '';
+
+  document.getElementById('sign-grid').addEventListener('click', e => {
+    const btn = e.target.closest('.sign-btn');
+    if (!btn) return;
+    document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSign = btn.dataset.sign;
+  });
+
+  async function startReading() {
+    const name = document.getElementById('name').value.trim();
+    const question = document.getElementById('question').value.trim();
+    if (!name) { alert('Please enter your name'); return; }
+    if (!selectedSign) { alert('Please select your zodiac sign'); return; }
+
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result-icon').textContent = signIcons[selectedSign];
+    document.getElementById('result-name').textContent = name + ' · ' + selectedSign;
+    document.getElementById('result-date').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('action-row').style.display = 'none';
+
+    document.getElementById('reading-content').innerHTML = `
+      <div class="loading-section">
+        <div class="loading-orb"></div>
+        <p class="loading-text">The stars are aligning for you...</p>
+      </div>`;
+
+    const prompt = `You are Mystic AI, a powerful and poetic AI fortune teller. Give a mystical fortune reading for ${name}, a ${selectedSign}.${question ? ` Their question: "${question}"` : ''}
+
+Respond ONLY with raw JSON, no markdown, no explanation:
+{
+  "overall": "2-3 sentences about their cosmic energy and current spiritual situation",
+  "love": "2 sentences about love, relationships, and matters of the heart",
+  "money": "2 sentences about finances, career, and material abundance",
+  "advice": "One powerful prophecy or mystical piece of advice — poetic and memorable"
+}
+
+Be dramatic, mystical, poetic. Use words like 'the cosmos', 'celestial', 'vibration', 'energy'. Be optimistic but mysterious.`;
+
+    try {
+      const res = await fetch('/api/fortune', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      const reading = JSON.parse(data.text.replace(/```json|```/g, '').trim());
+
+      document.getElementById('reading-content').innerHTML = `
+        <div class="divider"></div>
+        <div class="section-title">Overall energy</div>
+        <p class="section-text">${reading.overall}</p>
+        <div class="divider"></div>
+        <div class="section-title">Love & heart</div>
+        <p class="section-text">${reading.love}</p>
+        <div class="divider"></div>
+        <div class="section-title">Abundance & career</div>
+        <p class="section-text">${reading.money}</p>
+        <div class="divider"></div>
+        <div class="section-title">The prophecy</div>
+        <div class="prophecy">"${reading.advice}"</div>
+      `;
+      document.getElementById('action-row').style.display = 'flex';
+    } catch(e) {
+      document.getElementById('reading-content').innerHTML = `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">The cosmic connection was interrupted.<br>Please try again.</p>`;
+      document.getElementById('action-row').style.display = 'flex';
+    }
+  }
+
+  function resetForm() {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('landing').style.display = 'flex';
+    document.getElementById('name').value = '';
+    document.getElementById('question').value = '';
+    document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+    selectedSign = '';
+  }
+
+  function shareReading() {
+    const text = document.getElementById('reading-content').innerText;
+    if (navigator.share) {
+      navigator.share({ title: 'My Mystic AI Reading', text: text, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText('My Mystic AI Reading:\n\n' + text + '\n\n' + window.location.href)
+        .then(() => alert('Copied to clipboard!'));
+    }
+  }
+</script>
+</body>
+</html>

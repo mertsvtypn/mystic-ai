@@ -1,0 +1,8 @@
+{
+  "name": "mystic-ai",
+  "version": "1.0.0",
+  "description": "AI Fortune Teller",
+  "engines": {
+    "node": "18.x"
+  }
+}
