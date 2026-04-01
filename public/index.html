@@ -339,6 +339,7 @@ function buildHTML(r){
     }).join('');
     const meanings=cardKeys.map((k,i)=>`<div id="meaning-${i}" style="display:none;"><div class="divider"></div><div class="section-title">${r[k].position||k} — ${r[k].name||''}</div><p class="card-meaning-text">${r[k].meaning||''}</p></div>`).join('');
     const advice=r.advice?`<div class="divider"></div><div class="section-title">${S.advice||'Kehanet'}</div><div class="prophecy">"${r.advice}"</div>`:'';
+    setTimeout(()=>autoRevealCards(cardKeys.length),300);
     return`<div class="tarot-spread">${cards}</div><p class="reveal-hint">${lang==='tr'?'Kartlara tıkla, sırlarını öğren ✦':'Tap each card to reveal its secret ✦'}</p>${meanings}${advice}`;
   }
   return Object.keys(r).map((k,i)=>{
