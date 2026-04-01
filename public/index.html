@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Mystic AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--bg:#0a0612;--surface:#120d1e;--border:rgba(180,140,255,0.15);--purple:#9b6dff;--purple-light:#c4a0ff;--gold:#d4af70;--gold-light:#f0d090;--text:#e8e0f0;--muted:#8878a0;}
@@ -12,6 +12,12 @@
     .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
     .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s);opacity:var(--op,0.4);}
     @keyframes twinkle{0%,100%{opacity:var(--op,0.4);}50%{opacity:0.1;}}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+    @keyframes pulse-orb{0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(124,58,237,0.4);}50%{transform:scale(1.1);box-shadow:0 0 40px rgba(124,58,237,0.6);}}
+    @keyframes fade-text{0%,100%{opacity:0.4;}50%{opacity:1;}}
+    @keyframes shimmer{0%{transform:translateX(-200%)}100%{transform:translateX(200%)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes particleFloat{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-60px) scale(0);opacity:0;}}
     .page{position:relative;z-index:1;}
     .top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem 0;}
     .nav-tabs{display:flex;gap:8px;}
@@ -22,7 +28,6 @@
     .lang-btn.active{background:rgba(155,109,255,0.3);color:var(--purple-light);}
     #landing{min-height:calc(100vh - 60px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem 1.5rem 2rem;text-align:center;}
     .orb{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060);margin:0 auto 1.25rem;animation:float 6s ease-in-out infinite;box-shadow:0 0 40px rgba(124,58,237,0.4),0 0 80px rgba(124,58,237,0.15);}
-    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
     .logo{font-family:'Cinzel',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:600;letter-spacing:0.08em;background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--purple-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
     .tagline{font-size:0.95rem;color:var(--muted);font-style:italic;margin-bottom:1.25rem;}
     .cat-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap;justify-content:center;}
@@ -50,25 +55,26 @@
     .preview-wrap{position:relative;}
     .preview-img{width:65px;height:65px;object-fit:cover;border-radius:8px;border:1px solid var(--border);display:block;}
     .preview-rm{position:absolute;top:-6px;right:-6px;background:#7c3aed;color:white;width:16px;height:16px;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;border:none;}
+    .card-count-row{display:flex;gap:8px;justify-content:center;margin-bottom:0.75rem;flex-wrap:wrap;}
+    .count-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
+    .count-btn:hover,.count-btn.active{border-color:var(--purple);background:rgba(155,109,255,0.2);color:var(--purple-light);}
     .free-note{text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:0.9rem;font-style:italic;}
     .cta{width:100%;padding:0.9rem;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;color:white;font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;}
     .cta:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(124,58,237,0.4);}
     .cta:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
     #result{display:none;min-height:100vh;padding:2rem 1.5rem 3rem;}
-    .result-inner{max-width:520px;margin:0 auto;}
+    .result-inner{max-width:560px;margin:0 auto;}
     .result-header{text-align:center;margin-bottom:1.75rem;}
     .result-orb{width:65px;height:65px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060);margin:0 auto 0.9rem;box-shadow:0 0 30px rgba(124,58,237,0.4);animation:float 6s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
     .result-title{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold-light);margin-bottom:0.2rem;}
     .result-subtitle{font-size:0.82rem;color:var(--muted);font-style:italic;}
     .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:1.1rem 0;}
     .section-title{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
-    .section-text{font-size:0.98rem;color:var(--text);line-height:1.8;font-weight:300;}
+    .section-text{font-size:0.98rem;color:var(--text);line-height:1.85;font-weight:300;}
     .prophecy{background:rgba(155,109,255,0.08);border:1px solid rgba(155,109,255,0.2);border-radius:12px;padding:1.1rem 1.3rem;font-style:italic;color:var(--purple-light);font-size:0.98rem;line-height:1.8;text-align:center;}
     .loading-section{text-align:center;padding:2rem 0;}
     .loading-orb{width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed);margin:0 auto 1.25rem;animation:pulse-orb 1.5s ease-in-out infinite;}
-    @keyframes pulse-orb{0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(124,58,237,0.4);}50%{transform:scale(1.1);box-shadow:0 0 40px rgba(124,58,237,0.6);}}
     .loading-text{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.15em;color:var(--muted);animation:fade-text 2s ease-in-out infinite;}
-    @keyframes fade-text{0%,100%{opacity:0.4;}50%{opacity:1;}}
     .action-row{display:flex;gap:10px;margin-top:1.25rem;}
     .btn-sec{flex:1;padding:0.7rem;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Crimson Pro',serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;}
     .btn-sec:hover{border-color:var(--purple);color:var(--purple-light);}
@@ -80,27 +86,31 @@
     .history-meta{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-bottom:0.25rem;}
     .history-preview{font-size:0.88rem;color:var(--text);opacity:0.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .disclaimer{text-align:center;font-size:0.72rem;color:var(--muted);font-style:italic;margin-top:1.25rem;opacity:0.6;}
-    .card-count-row{display:flex;gap:8px;justify-content:center;margin-bottom:0.75rem;flex-wrap:wrap;}
-    .count-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
-    .count-btn:hover,.count-btn.active{border-color:var(--purple);background:rgba(155,109,255,0.2);color:var(--purple-light);}
-    .tarot-spread{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0.5rem;}
-    .tarot-card-wrap{perspective:1000px;flex:0 0 auto;text-align:center;}
-    .tarot-card{width:120px;aspect-ratio:0.65;position:relative;transform-style:preserve-3d;transition:transform 0.9s cubic-bezier(0.4,0,0.2,1);border-radius:12px;margin:0 auto;}
+
+    /* ── TAROT ── */
+    .tarot-spread{display:flex;gap:10px;justify-content:center;margin:1.5rem 0 1.25rem;overflow-x:auto;padding:4px 4px 12px;}
+    .tarot-card-wrap{perspective:1400px;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;}
+    .tarot-card{width:105px;aspect-ratio:0.63;position:relative;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(0.23,1,0.32,1);border-radius:10px;}
     .tarot-card.flipped{transform:rotateY(180deg);}
-    .card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:2px solid rgba(212,175,112,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6);}
-    .card-back-face{background:linear-gradient(160deg,#1a0f35,#0e0820);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
-    .card-back-pattern{width:70%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(212,175,112,0.25);display:flex;align-items:center;justify-content:center;font-size:2rem;}
-    .card-back-txt{font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:0.15em;color:rgba(212,175,112,0.4);text-transform:uppercase;}
-    .card-front-face{transform:rotateY(180deg);background:#1a1030;}
+    .card-face{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;}
+    .card-back-face{background:linear-gradient(150deg,#1e0f40 0%,#0e0820 100%);border:1.5px solid rgba(212,175,112,0.3);box-shadow:0 6px 28px rgba(0,0,0,0.8),0 0 0 1px rgba(155,109,255,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .cbm{width:58%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(212,175,112,0.18);display:flex;align-items:center;justify-content:center;position:relative;}
+    .cbm::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(212,175,112,0.1);}
+    .cbm::after{content:'✦';font-size:1.2rem;color:rgba(212,175,112,0.4);}
+    .cbt{font-family:'Cinzel',serif;font-size:0.36rem;letter-spacing:0.18em;color:rgba(212,175,112,0.25);text-transform:uppercase;}
+    .card-front-face{transform:rotateY(180deg);background:#080514;border:1.5px solid rgba(212,175,112,0.45);box-shadow:0 0 30px rgba(124,58,237,0.25),0 8px 40px rgba(0,0,0,0.9);overflow:hidden;}
     .card-front-face img{width:100%;height:100%;object-fit:cover;display:block;}
-    .card-info{margin-top:8px;}
-    .card-info-name{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;color:var(--gold);text-transform:uppercase;margin-bottom:2px;}
-    .card-info-pos{font-family:'Cinzel',serif;font-size:0.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
-    .card-meaning-block{display:none;background:rgba(155,109,255,0.06);border:1px solid rgba(155,109,255,0.15);border-radius:10px;padding:0.9rem 1rem;margin-top:0.5rem;animation:fadeUp 0.5s ease;}
-    .card-meaning-block.visible{display:block;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .card-meaning-text{font-size:0.9rem;color:var(--text);line-height:1.75;font-weight:300;}
-    .reveal-hint{font-size:0.72rem;color:var(--muted);text-align:center;font-style:italic;margin:0.25rem 0 0.75rem;}
+    .card-sheen{position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,0.12) 50%,transparent 65%);transform:translateX(-200%);animation:shimmer 0.9s ease forwards;}
+    .card-lbl{margin-top:7px;text-align:center;opacity:0;transform:translateY(5px);transition:opacity 0.5s ease 0.3s,transform 0.5s ease 0.3s;}
+    .card-lbl.show{opacity:1;transform:translateY(0);}
+    .card-lbl-name{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.07em;color:var(--gold);text-transform:uppercase;line-height:1.3;}
+    .card-lbl-pos{font-size:0.48rem;color:var(--muted);font-style:italic;margin-top:1px;}
+    .tarot-interp{margin-top:0.5rem;opacity:0;transform:translateY(14px);transition:opacity 0.7s ease,transform 0.7s ease;}
+    .tarot-interp.show{opacity:1;transform:translateY(0);}
+    .tarot-interp p{font-size:1rem;color:var(--text);line-height:1.88;font-weight:300;margin-bottom:0.8rem;}
+    .tarot-interp p:last-child{margin-bottom:0;}
+    .tarot-interp-box{background:rgba(155,109,255,0.07);border:1px solid rgba(155,109,255,0.18);border-radius:14px;padding:1.2rem 1.4rem;}
+    .particle{position:fixed;pointer-events:none;border-radius:50%;animation:particleFloat 1.2s ease forwards;}
   </style>
 </head>
 <body>
@@ -129,10 +139,10 @@
       <button class="cat-tab" onclick="setCat('coffee')" id="cat-coffee">☕ Kahve Falı</button>
     </div>
     <div class="form-card">
-      <div class="field"><label id="lbl-name">İsmin</label><input id="name" type="text" placeholder="örn. Ayşe" autocomplete="off" /></div>
+      <div class="field"><label id="lbl-name">İsmin</label><input id="name" type="text" placeholder="örn. Ayşe" autocomplete="off"/></div>
       <div class="row2">
-        <div class="field"><label id="lbl-bdate">Doğum Tarihi</label><input id="birthdate" type="date" /></div>
-        <div class="field"><label id="lbl-btime">Doğum Saati</label><input id="birthtime" type="time" /></div>
+        <div class="field"><label id="lbl-bdate">Doğum Tarihi</label><input id="birthdate" type="date"/></div>
+        <div class="field"><label id="lbl-btime">Doğum Saati</label><input id="birthtime" type="time"/></div>
       </div>
       <div class="field" id="sign-field">
         <label id="lbl-sign">Burcun</label>
@@ -162,7 +172,7 @@
       <div class="field" id="dream-field" style="display:none;"><label id="lbl-dream">Rüyanı Anlat</label><textarea id="dream-input" placeholder="Rüyanda ne gördüğünü detaylıca anlat..."></textarea></div>
       <div class="field" id="coffee-field" style="display:none;">
         <label id="lbl-coffee">Kahve Fincanı Fotoğrafı (max 6)</label>
-        <div class="upload-zone"><input type="file" id="coffee-input" accept="image/*" multiple onchange="handleImages(event)" /><div style="font-size:1.8rem;margin-bottom:0.4rem;">☕</div><p class="upload-text" id="upload-text">Fincanın fotoğrafını yükle veya tıkla</p></div>
+        <div class="upload-zone"><input type="file" id="coffee-input" accept="image/*" multiple onchange="handleImages(event)"/><div style="font-size:1.8rem;margin-bottom:0.4rem;">☕</div><p class="upload-text" id="upload-text">Fincanın fotoğrafını yükle veya tıkla</p></div>
         <div class="upload-preview" id="upload-preview"></div>
       </div>
       <div class="field" id="question-field"><label id="lbl-q">Evrene Sor (isteğe bağlı)</label><textarea id="question" placeholder="Bu yıl aşk bulacak mıyım?..."></textarea></div>
@@ -196,20 +206,22 @@
 </div>
 
 <script>
+// Stars
 const starsEl=document.getElementById('stars');
 for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;starsEl.appendChild(s);}
 
-let lang='tr';
-let tarotCardCount=3;
+let lang='tr', tarotCardCount=3, selectedSign='', currentCat='zodiac', uploadedImages=[];
+
 function setCardCount(n){tarotCardCount=n;document.querySelectorAll('.count-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.count)===n));}
+
 const T={
   tr:{tagline:'Yıldızlar seni bekliyordu',tabHome:'Fal Bak',tabHist:'Geçmiş',lblName:'İsmin',lblBdate:'Doğum Tarihi',lblBtime:'Doğum Saati',lblSign:'Burcun',lblDream:'Rüyanı Anlat',lblCoffee:'Kahve Fincanı Fotoğrafı (max 6)',uploadTxt:'Fincanın fotoğrafını yükle veya tıkla',lblQ:'Evrene Sor (isteğe bağlı)',freeNote:'✦ Bugün 3 ücretsiz okuma ✦',ctaBtn:'Falıma Bak ✦',histTitle:'Fal Geçmişin',histEmpty:'Henüz fal baktırmadın.',btnAgain:'Tekrar Bak',btnShare:'Paylaş ✦',loading:'Kozmik titreşimler okunuyor...',noName:'Lütfen ismini gir',noSign:'Lütfen burcunu seç',noDream:'Lütfen rüyanı anlat',noPhoto:'Lütfen en az 1 fotoğraf yükle',copied:'Kopyalandı!',
    cats:{zodiac:'♈ Burç Falı',tarot:'🃏 Tarot',numerology:'🔢 Numeroloji',dream:'🌙 Rüya',coffee:'☕ Kahve Falı'},
    secs:{overall:'Genel Enerji',love:'Aşk & Kalp',money:'Para & Kariyer',advice:'Kehanet',past:'Geçmiş',present:'Şimdi',future:'Gelecek',life_number:'Yaşam Sayısı',destiny:'Kader',year:'Bu Yıl',symbols:'Semboller',message:'Rüyanın Mesajı',warning:'Uyarı'},
    namePh:'örn. Ayşe',qPh:'Bu yıl aşk bulacak mıyım?...',dreamPh:'Rüyanda ne gördüğünü detaylıca anlat...'},
-  en:{tagline:'The stars have been waiting for you',tabHome:'Reading',tabHist:'History',lblName:'Your name',lblBdate:'Birth Date',lblBtime:'Birth Time',lblSign:'Your sign',lblDream:'Describe your dream',lblCoffee:'Coffee Cup Photo (max 6)',uploadTxt:'Upload or tap to add photos',lblQ:'Ask the universe (optional)',freeNote:'✦ 3 free readings today ✦',ctaBtn:'Reveal My Fortune ✦',histTitle:'Your Reading History',histEmpty:'No readings yet.',btnAgain:'Read again',btnShare:'Share ✦',loading:'Reading cosmic vibrations...',noName:'Please enter your name',noSign:'Please select your sign',noDream:'Please describe your dream',noPhoto:'Please upload at least 1 photo',copied:'Copied!',
+  en:{tagline:'The stars have been waiting for you',tabHome:'Read Fortune',tabHist:'History',lblName:'Your Name',lblBdate:'Birth Date',lblBtime:'Birth Time',lblSign:'Your Sign',lblDream:'Describe Your Dream',lblCoffee:'Coffee Cup Photos (max 6)',uploadTxt:'Upload or click to add photos',lblQ:'Ask the Universe (optional)',freeNote:'✦ 3 free readings today ✦',ctaBtn:'Reveal My Fortune ✦',histTitle:'Your Reading History',histEmpty:'No readings yet.',btnAgain:'Read Again',btnShare:'Share ✦',loading:'Reading the cosmic vibrations...',noName:'Please enter your name',noSign:'Please select your zodiac sign',noDream:'Please describe your dream',noPhoto:'Please upload at least 1 photo',copied:'Copied!',
    cats:{zodiac:'♈ Zodiac',tarot:'🃏 Tarot',numerology:'🔢 Numerology',dream:'🌙 Dream',coffee:'☕ Coffee'},
-   secs:{overall:'Overall Energy',love:'Love & Heart',money:'Money & Career',advice:'The Prophecy',past:'Past',present:'Present',future:'Future',life_number:'Life Number',destiny:'Destiny',year:'This Year',symbols:'Symbols',message:'Dream Message',warning:'Warning'},
+   secs:{overall:'Overall Energy',love:'Love & Heart',money:'Money & Career',advice:'Prophecy',past:'Past',present:'Present',future:'Future',life_number:'Life Number',destiny:'Destiny',year:'This Year',symbols:'Symbols',message:'Dream Message',warning:'Warning'},
    namePh:'e.g. Sarah',qPh:'Will I find love this year?...',dreamPh:'Describe your dream in detail...'}
 };
 
@@ -218,44 +230,59 @@ function setLang(l){
   document.getElementById('lang-tr').classList.toggle('active',l==='tr');
   document.getElementById('lang-en').classList.toggle('active',l==='en');
   const t=T[l];
-  const ids={tagline:'tagline','tab-home':'tabHome','tab-history':'tabHist','lbl-name':'lblName','lbl-bdate':'lblBdate','lbl-btime':'lblBtime','lbl-sign':'lblSign','lbl-dream':'lblDream','lbl-coffee':'lblCoffee','upload-text':'uploadTxt','lbl-q':'lblQ','free-note':'freeNote','cta-btn':'ctaBtn','history-title':'histTitle','history-empty':'histEmpty','btn-again':'btnAgain','btn-share':'btnShare'};
-  Object.entries(ids).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.textContent=t[key];});
+  document.getElementById('tagline').textContent=t.tagline;
+  document.getElementById('tab-home').textContent=t.tabHome;
+  document.getElementById('tab-history').textContent=t.tabHist;
+  document.getElementById('lbl-name').textContent=t.lblName;
+  document.getElementById('lbl-bdate').textContent=t.lblBdate;
+  document.getElementById('lbl-btime').textContent=t.lblBtime;
+  document.getElementById('lbl-sign').textContent=t.lblSign;
+  document.getElementById('lbl-dream').textContent=t.lblDream;
+  document.getElementById('lbl-coffee').textContent=t.lblCoffee;
+  document.getElementById('upload-text').textContent=t.uploadTxt;
+  document.getElementById('lbl-q').textContent=t.lblQ;
+  document.getElementById('free-note').textContent=t.freeNote;
+  document.getElementById('cta-btn').textContent=t.ctaBtn;
+  document.getElementById('history-title').textContent=t.histTitle;
+  document.getElementById('history-empty').textContent=t.histEmpty;
+  document.getElementById('btn-again').textContent=t.btnAgain;
+  document.getElementById('btn-share').textContent=t.btnShare;
   document.getElementById('name').placeholder=t.namePh;
   document.getElementById('question').placeholder=t.qPh;
   document.getElementById('dream-input').placeholder=t.dreamPh;
-  Object.keys(t.cats).forEach(k=>{const el=document.getElementById('cat-'+k);if(el)el.textContent=t.cats[k];});
-  document.querySelectorAll('.sign-btn').forEach(btn=>{btn.querySelector('.name').textContent=btn.dataset[l];});
+  document.querySelectorAll('.cat-tab').forEach(b=>{const id=b.id.replace('cat-','');b.textContent=t.cats[id]||b.textContent;});
+  document.querySelectorAll('.sign-btn').forEach(b=>{const n=b.querySelector('.name');if(n)n.textContent=b.dataset[l]||n.textContent;});
+  if(document.getElementById('lbl-cardcount'))document.getElementById('lbl-cardcount').textContent=l==='tr'?'Kaç Kart Çekilsin?':'How Many Cards?';
 }
 
-let currentCat='zodiac';
 function setCat(cat){
   currentCat=cat;
-  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('cat-'+cat).classList.add('active');
-  document.getElementById('sign-field').style.display=(cat==='zodiac'||cat==='tarot')?'block':'none';
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.toggle('active',b.id==='cat-'+cat));
+  document.getElementById('sign-field').style.display=cat==='zodiac'?'block':'none';
   document.getElementById('tarot-count-field').style.display=cat==='tarot'?'block':'none';
   document.getElementById('dream-field').style.display=cat==='dream'?'block':'none';
   document.getElementById('coffee-field').style.display=cat==='coffee'?'block':'none';
   document.getElementById('question-field').style.display=cat==='coffee'?'none':'block';
 }
 
-let selectedSign='';
 document.getElementById('sign-grid').addEventListener('click',e=>{
   const btn=e.target.closest('.sign-btn');if(!btn)return;
   document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');selectedSign=btn.dataset[lang];
+  btn.classList.add('active');selectedSign=btn.dataset[lang]||btn.dataset.en;
 });
 
-let uploadedImages=[];
 function handleImages(e){
-  Array.from(e.target.files).slice(0,6-uploadedImages.length).forEach(file=>{
+  const files=Array.from(e.target.files);
+  files.forEach(f=>{
     if(uploadedImages.length>=6)return;
     const r=new FileReader();
-    r.onload=ev=>{uploadedImages.push({base64:ev.target.result.split(',')[1],type:file.type});renderPreviews();};
-    r.readAsDataURL(file);
+    r.onload=ev=>{uploadedImages.push({base64:ev.target.result.split(',')[1],type:f.type});renderPreviews();};
+    r.readAsDataURL(f);
   });
 }
-function renderPreviews(){document.getElementById('upload-preview').innerHTML=uploadedImages.map((img,i)=>`<div class="preview-wrap"><img class="preview-img" src="data:${img.type};base64,${img.base64}"/><button class="preview-rm" onclick="removeImg(${i})">×</button></div>`).join('');}
+function renderPreviews(){
+  document.getElementById('upload-preview').innerHTML=uploadedImages.map((_,i)=>`<div class="preview-wrap"><img class="preview-img" src="data:${uploadedImages[i].type};base64,${uploadedImages[i].base64}"/><button class="preview-rm" onclick="removeImg(${i})">×</button></div>`).join('');
+}
 function removeImg(i){uploadedImages.splice(i,1);renderPreviews();}
 
 function showTab(tab){
@@ -267,8 +294,8 @@ function showTab(tab){
   if(tab==='history')renderHistory();
 }
 
-function getHist(){try{return JSON.parse(localStorage.getItem('mystic_h')||'[]');}catch{return[];}}
-function saveHist(e){const h=getHist();h.unshift(e);if(h.length>20)h.pop();localStorage.setItem('mystic_h',JSON.stringify(h));}
+function getHist(){try{return JSON.parse(localStorage.getItem('myst_hist')||'[]');}catch{return[];}}
+function saveHist(item){const h=getHist();h.unshift(item);localStorage.setItem('myst_hist',JSON.stringify(h.slice(0,20)));}
 function renderHistory(){
   const h=getHist(),list=document.getElementById('history-list'),empty=document.getElementById('history-empty');
   if(!h.length){list.innerHTML='';empty.style.display='block';return;}
@@ -283,14 +310,58 @@ function viewHist(i){
   document.getElementById('action-row').style.display='flex';
 }
 
+// ── RIDER-WAITE CARD MAP (English names → Wikipedia URLs) ──
+const RW={
+  'The Fool':'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg',
+  'The Magician':'https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg',
+  'The High Priestess':'https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg',
+  'The Empress':'https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg',
+  'The Emperor':'https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg',
+  'The Hierophant':'https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg',
+  'The Lovers':'https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg',
+  'The Chariot':'https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg',
+  'Strength':'https://upload.wikimedia.org/wikipedia/commons/f/f6/RWS_Tarot_08_Strength.jpg',
+  'The Hermit':'https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg',
+  'Wheel of Fortune':'https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg',
+  'Justice':'https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg',
+  'The Hanged Man':'https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg',
+  'Death':'https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg',
+  'Temperance':'https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg',
+  'The Devil':'https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg',
+  'The Tower':'https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg',
+  'The Star':'https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg',
+  'The Moon':'https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg',
+  'The Sun':'https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg',
+  'Judgement':'https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg',
+  'The World':'https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg',
+  'Ace of Cups':'https://upload.wikimedia.org/wikipedia/commons/3/36/Cups01.jpg',
+  'Two of Cups':'https://upload.wikimedia.org/wikipedia/commons/d/d5/Cups02.jpg',
+  'Three of Cups':'https://upload.wikimedia.org/wikipedia/commons/b/b7/Cups03.jpg',
+  'Six of Cups':'https://upload.wikimedia.org/wikipedia/commons/1/17/Cups06.jpg',
+  'Ten of Cups':'https://upload.wikimedia.org/wikipedia/commons/8/84/Cups10.jpg',
+  'Ace of Pentacles':'https://upload.wikimedia.org/wikipedia/commons/f/fd/Pents01.jpg',
+  'Five of Pentacles':'https://upload.wikimedia.org/wikipedia/commons/9/96/Pents05.jpg',
+  'Ten of Pentacles':'https://upload.wikimedia.org/wikipedia/commons/4/42/Pents10.jpg',
+  'Ace of Swords':'https://upload.wikimedia.org/wikipedia/commons/1/1a/Swords01.jpg',
+  'Five of Swords':'https://upload.wikimedia.org/wikipedia/commons/2/23/Swords05.jpg',
+  'Ace of Wands':'https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg',
+  'Three of Wands':'https://upload.wikimedia.org/wikipedia/commons/f/ff/Wands03.jpg',
+  'default':'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg'
+};
+function getCardImg(englishName){
+  if(!englishName)return RW.default;
+  const key=Object.keys(RW).find(k=>k.toLowerCase()===englishName.toLowerCase());
+  return key?RW[key]:RW.default;
+}
+
 async function startReading(){
   const t=T[lang],name=document.getElementById('name').value.trim(),bd=document.getElementById('birthdate').value,bt=document.getElementById('birthtime').value,q=document.getElementById('question').value.trim(),dr=document.getElementById('dream-input').value.trim();
   if(!name){alert(t.noName);return;}
-  if((currentCat==='zodiac'||currentCat==='tarot')&&!selectedSign){alert(t.noSign);return;}
+  if(currentCat==='zodiac'&&!selectedSign){alert(t.noSign);return;}
   if(currentCat==='dream'&&!dr){alert(t.noDream);return;}
   if(currentCat==='coffee'&&!uploadedImages.length){alert(t.noPhoto);return;}
 
-  document.getElementById('landing').style.display='none';document.getElementById('result').style.display='block';
+  document.getElementById('landing').style.display='none';document.getElementById('result').style.display='block';window.scrollTo(0,0);
   const icons={zodiac:'🔮',tarot:'🃏',numerology:'🔢',dream:'🌙',coffee:'☕'};
   document.getElementById('result-icon').textContent=icons[currentCat];
   document.getElementById('result-name').textContent=name+(selectedSign?' · '+selectedSign:'');
@@ -298,23 +369,30 @@ async function startReading(){
   document.getElementById('action-row').style.display='none';
   document.getElementById('reading-content').innerHTML=`<div class="loading-section"><div class="loading-orb"></div><p class="loading-text">${t.loading}</p></div>`;
 
-  const li=lang==='tr'?'Türkçe yanıt ver.':'Reply in English.';
-  const bdi=bd?`\nDoğum: ${bd}.`:'',bti=bt?`\nDoğum saati: ${bt}.`:'',qi=q?`\nSoru: "${q}"`:'';
+  const li=lang==='tr'?'Türkçe yanıt ver. Kart isimlerini İNGİLİZCE yaz (örn: The Lovers, The Moon).':'Reply in English.';
+  const bdi=bd?`\nBirth date: ${bd}.`:'',bti=bt?`\nBirth time: ${bt}.`:'',qi=q?`\nQuestion: "${q}"`:'';
   let prompt='',msgContent=null;
 
-  if(currentCat==='zodiac')prompt=`Sen Mystic AI, mistik falcısın. ${name} adında ${selectedSign} için fal bak.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"overall":"2-3 cümle","love":"1-2 cümle aşk","money":"1-2 cümle para","advice":"Kehanet"}`;
-  else if(currentCat==='tarot'){
-    const positions1=[lang==='tr'?'Mesaj':'Message'];
-    const positions3=lang==='tr'?['Geçmiş','Şimdi','Gelecek']:['Past','Present','Future'];
-    const positions5=lang==='tr'?['Geçmiş','Şimdi','Gelecek','Engel','Tavsiye']:['Past','Present','Future','Challenge','Advice'];
-    const positions=tarotCardCount===1?positions1:tarotCardCount===3?positions3:positions5;
-    const cardKeys=positions.map((_,i)=>`card${i+1}`);
-    const jsonStr=cardKeys.map((k,i)=>`"${k}":{"name":"Kart Adı","position":"${positions[i]}","symbol":"🌙","meaning":"yorum"}`).join(',');
-    prompt=`Mistik tarot falcısısın. ${name} için (${selectedSign}) ${tarotCardCount} kart çek.${bdi}${bti}${qi}\n${li}\nSadece ham JSON, her kart için emoji symbol dahil: {${jsonStr},"advice":"Genel mesaj"}`;
+  if(currentCat==='zodiac'){
+    prompt=`You are a masterful mystical fortune teller. Give a deeply personalized reading for ${name}, ${selectedSign}.${bdi}${bti}${qi}\n${li}\nOnly raw JSON: {"overall":"2-3 evocative sentences about cosmic energy, use their sign's traits","love":"2 rich sentences about love life","money":"2 rich sentences about finances and career","advice":"One unforgettable poetic prophecy, 1-2 sentences"}`;
   }
-  else if(currentCat==='numerology')prompt=`Numeroloji uzmanısın. ${name} için analiz.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"life_number":"yaşam sayısı+açıklama","destiny":"kader+yorum","year":"bu yılın enerjisi","advice":"Kehanet"}`;
-  else if(currentCat==='dream')prompt=`Mistik rüya yorumcususun. ${name}'nin rüyası: "${dr}"${bdi}\n${li}\nSadece ham JSON: {"symbols":"Semboller","message":"Mesaj","warning":"Uyarı","advice":"Tavsiye"}`;
-  else if(currentCat==='coffee'){msgContent=[...uploadedImages.map(img=>({type:'image',source:{type:'base64',media_type:img.type,data:img.base64}})),{type:'text',text:`Kahve falı ustasısın. ${name} için fincanı yorumla.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"symbols":"Şekiller ve anlamlar","love":"Aşk mesajı","future":"Yakın gelecek","advice":"Mistik tavsiye"}`}];}
+  else if(currentCat==='tarot'){
+    const pos3=lang==='tr'?['Geçmiş','Şimdi','Gelecek']:['Past','Present','Future'];
+    const pos5=lang==='tr'?['Geçmiş','Şimdi','Gelecek','Engel','Tavsiye']:['Past','Present','Future','Challenge','Advice'];
+    const pos1=lang==='tr'?['Mesaj']:['Message'];
+    const positions=tarotCardCount===1?pos1:tarotCardCount===3?pos3:pos5;
+    const cardJson=positions.map((_,i)=>`"card${i+1}":{"englishName":"EXACT English Rider-Waite card name","displayName":"${lang==='tr'?'Turkish card name':'Same English name'}","position":"${positions[i]}"}`).join(',');
+    prompt=`You are a master tarot reader. Draw ${tarotCardCount} distinct Rider-Waite tarot cards for ${name}.${qi}\n${li}\nIMPORTANT: englishName must be the EXACT official Rider-Waite card name in English (e.g. "The Lovers", "The Moon", "Ace of Cups"). Each card must be DIFFERENT.\nOnly raw JSON: {${cardJson},"interpretation":"Write a flowing, deeply insightful ${tarotCardCount===1?'1':tarotCardCount===3?'2':'3'}-paragraph interpretation (no bullet points, no card-by-card breakdown). Weave all cards together into one cohesive mystical narrative about ${name}'s situation${q?' regarding: '+q:''}. Write as a wise oracle speaking directly to ${name}. Rich, evocative language. Each paragraph 3-4 sentences."}`;
+  }
+  else if(currentCat==='numerology'){
+    prompt=`You are a numerology master. Analyze ${name}.${bdi}${bti}${qi}\n${li}\nOnly raw JSON: {"life_number":"Life path number and 2-sentence meaning","destiny":"Destiny number and 2-sentence meaning","year":"This year's energy in 2 sentences","advice":"One powerful numerological prophecy"}`;
+  }
+  else if(currentCat==='dream'){
+    prompt=`You are a mystical dream interpreter. Interpret ${name}'s dream: "${dr}"${bdi}\n${li}\nOnly raw JSON: {"symbols":"Key dream symbols and their meanings (2 sentences)","message":"What the subconscious is communicating (2 sentences)","warning":"Spiritual warning or guidance (1-2 sentences)","advice":"One profound dream prophecy"}`;
+  }
+  else if(currentCat==='coffee'){
+    msgContent=[...uploadedImages.map(img=>({type:'image',source:{type:'base64',media_type:img.type,data:img.base64}})),{type:'text',text:`You are a legendary Turkish coffee cup reader (tasseography). Read the cup for ${name}.${bdi}${bti}${qi}\n${li}\nOnly raw JSON: {"symbols":"Describe shapes and symbols you see (2 sentences)","love":"Love message from the cup (2 sentences)","future":"Near future revealed (2-3 sentences)","advice":"One mystical coffee prophecy"}`}];
+  }
 
   try{
     const body=msgContent?{messages:[{role:'user',content:msgContent}]}:{prompt};
@@ -324,79 +402,40 @@ async function startReading(){
     const html=buildHTML(reading);
     document.getElementById('reading-content').innerHTML=html;
     document.getElementById('action-row').style.display='flex';
-    if(currentCat==='tarot'){const cardKeys=Object.keys(reading).filter(k=>k.startsWith('card'));autoRevealCards(cardKeys.length);}
-    saveHist({cat:t.cats[currentCat],name:name+(selectedSign?' · '+selectedSign:''),date:new Date().toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{day:'numeric',month:'short',year:'numeric'}),icon:icons[currentCat],preview:document.getElementById('reading-content').innerText.slice(0,100),html});
+    if(currentCat==='tarot'){
+      const total=Object.keys(reading).filter(k=>k.startsWith('card')).length;
+      autoReveal(total);
+    }
+    saveHist({cat:T[lang].cats[currentCat],name:name+(selectedSign?' · '+selectedSign:''),date:new Date().toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{day:'numeric',month:'short',year:'numeric'}),icon:icons[currentCat],preview:document.getElementById('reading-content').innerText.slice(0,100),html});
   }catch(e){
     document.getElementById('reading-content').innerHTML=`<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Kozmik bağlantı kesildi. Tekrar dene.':'Connection interrupted. Try again.'}</p>`;
     document.getElementById('action-row').style.display='flex';
   }
 }
 
-
-const RW_CARDS = {
-  'The Fool': 'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg',
-  'The Magician': 'https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg',
-  'The High Priestess': 'https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg',
-  'The Empress': 'https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg',
-  'The Emperor': 'https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg',
-  'The Hierophant': 'https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg',
-  'The Lovers': 'https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg',
-  'The Chariot': 'https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg',
-  'Strength': 'https://upload.wikimedia.org/wikipedia/commons/f/f6/RWS_Tarot_08_Strength.jpg',
-  'The Hermit': 'https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg',
-  'Wheel of Fortune': 'https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg',
-  'Justice': 'https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg',
-  'The Hanged Man': 'https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg',
-  'Death': 'https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg',
-  'Temperance': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg',
-  'The Devil': 'https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg',
-  'The Tower': 'https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg',
-  'The Star': 'https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg',
-  'The Moon': 'https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg',
-  'The Sun': 'https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg',
-  'Judgement': 'https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg',
-  'The World': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg',
-  'Ace of Cups': 'https://upload.wikimedia.org/wikipedia/commons/3/36/Cups01.jpg',
-  'Two of Cups': 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Cups02.jpg',
-  'Three of Cups': 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Cups03.jpg',
-  'Ten of Cups': 'https://upload.wikimedia.org/wikipedia/commons/8/84/Cups10.jpg',
-  'Ace of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Pents01.jpg',
-  'Five of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/9/96/Pents05.jpg',
-  'Ten of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/4/42/Pents10.jpg',
-  'Ace of Swords': 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Swords01.jpg',
-  'Ace of Wands': 'https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg',
-  'default': 'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg'
-};
-function getCardImg(name){return RW_CARDS[name]||RW_CARDS['default'];}
-
 function buildHTML(r){
   const S=T[lang].secs;
   if(currentCat==='tarot'){
     const cardKeys=Object.keys(r).filter(k=>k.startsWith('card'));
-    const cards=cardKeys.map((k,i)=>{
+    const spread=cardKeys.map((k,i)=>{
       const c=r[k];
-      const imgUrl=getCardImg(c.name||'');
+      const imgUrl=getCardImg(c.englishName||c.name||'');
       return`<div class="tarot-card-wrap">
         <div class="tarot-card" id="tc-${i}">
-          <div class="card-face card-back-face">
-            <div class="card-back-pattern">✦</div>
-            <div class="card-back-txt">Mystic AI</div>
-          </div>
+          <div class="card-face card-back-face"><div class="cbm"></div><div class="cbt">Mystic AI</div></div>
           <div class="card-face card-front-face">
-            <img src="${imgUrl}" alt="${c.name||''}" loading="lazy" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(160deg,#2a1060,#1a0840)'" />
+            <img src="${imgUrl}" alt="${c.displayName||c.englishName||''}" loading="eager" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg'"/>
+            <div class="card-sheen"></div>
           </div>
         </div>
-        <div class="card-info" id="info-${i}" style="display:none;">
-          <div class="card-info-name">${c.name||''}</div>
-          <div class="card-info-pos">${c.position||''}</div>
-        </div>
-        <div class="card-meaning-block" id="meaning-${i}">
-          <p class="card-meaning-text">${c.meaning||''}</p>
+        <div class="card-lbl" id="lbl-${i}">
+          <div class="card-lbl-name">${c.displayName||c.englishName||''}</div>
+          <div class="card-lbl-pos">${c.position||''}</div>
         </div>
       </div>`;
     }).join('');
-    const advice=r.advice?`<div class="divider"></div><div class="section-title">${S.advice||'Kehanet'}</div><div class="prophecy">"${r.advice}"</div>`:'';
-    return`<div class="tarot-spread">${cards}</div>${advice}`;
+    const interp=r.interpretation?`<div class="tarot-interp" id="tarot-interp"><div class="tarot-interp-box">${r.interpretation.split('\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('')}</div></div>`:'';
+    return`<div class="tarot-spread">${spread}</div>${interp}`;
   }
   return Object.keys(r).map((k,i)=>{
     const label=S[k]||k;
@@ -405,27 +444,37 @@ function buildHTML(r){
   }).join('');
 }
 
-function revealCard(i){
-  const card=document.getElementById('tc-'+i);
-  if(!card||card.classList.contains('flipped'))return;
-  card.classList.add('flipped');
-  setTimeout(()=>{
-    const info=document.getElementById('info-'+i);
-    const meaning=document.getElementById('meaning-'+i);
-    if(info)info.style.display='block';
-    if(meaning)meaning.classList.add('visible');
-  },500);
-}
-
-function autoRevealCards(total){
+function autoReveal(total){
   let i=0;
   function next(){
-    if(i>=total)return;
-    revealCard(i);
+    if(i>=total){
+      setTimeout(()=>{const interp=document.getElementById('tarot-interp');if(interp)interp.classList.add('show');},400);
+      return;
+    }
+    const card=document.getElementById('tc-'+i);
+    const lbl=document.getElementById('lbl-'+i);
+    if(card){
+      card.classList.add('flipped');
+      spawnParticles(card);
+      setTimeout(()=>{if(lbl)lbl.classList.add('show');},600);
+    }
     i++;
-    setTimeout(next,1200);
+    setTimeout(next,1400);
   }
-  setTimeout(next,600);
+  setTimeout(next,700);
+}
+
+function spawnParticles(cardEl){
+  const rect=cardEl.getBoundingClientRect();
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  for(let j=0;j<8;j++){
+    const p=document.createElement('div');p.className='particle';
+    const size=3+Math.random()*5,angle=Math.random()*Math.PI*2,dist=20+Math.random()*40;
+    const colors=['#9b6dff','#c4a0ff','#d4af70','#f0d090','#ffffff'];
+    p.style.cssText=`width:${size}px;height:${size}px;left:${cx+Math.cos(angle)*dist}px;top:${cy+Math.sin(angle)*dist}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.3}s;`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1500);
+  }
 }
 
 function resetForm(){
@@ -433,6 +482,7 @@ function resetForm(){
   document.getElementById('name').value='';document.getElementById('question').value='';document.getElementById('dream-input').value='';
   document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
   selectedSign='';uploadedImages=[];document.getElementById('upload-preview').innerHTML='';
+  window.scrollTo(0,0);
 }
 
 function shareReading(){
