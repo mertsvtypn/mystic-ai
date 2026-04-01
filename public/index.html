@@ -1,230 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mystic AI — Your Fortune Awaits</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mystic AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0612; --surface: #120d1e; --border: rgba(180,140,255,0.15);
-      --purple: #9b6dff; --purple-light: #c4a0ff; --gold: #d4af70; --gold-light: #f0d090;
-      --text: #e8e0f0; --muted: #8878a0;
-    }
-    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: 'Crimson Pro', Georgia, serif; font-size: 18px; line-height: 1.7; }
-    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 20%, rgba(100,50,180,0.12) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 80% 80%, rgba(60,20,120,0.1) 0%, transparent 70%); pointer-events: none; z-index: 0; }
-    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-    .star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: white; animation: twinkle var(--d, 3s) ease-in-out infinite; animation-delay: var(--delay, 0s); opacity: var(--op, 0.4); }
-    @keyframes twinkle { 0%,100%{opacity:var(--op,0.4);transform:scale(1)}50%{opacity:0.1;transform:scale(0.5)} }
-    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)} }
-    @keyframes pulse-orb { 0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(124,58,237,0.4)}50%{transform:scale(1.1);box-shadow:0 0 40px rgba(124,58,237,0.6)} }
-    @keyframes fade-in { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-    .page { position: relative; z-index: 1; }
-
-    /* LANG TOGGLE */
-    .lang-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; display: flex; gap: 4px; background: rgba(18,13,30,0.9); border: 1px solid var(--border); border-radius: 20px; padding: 4px; }
-    .lang-btn { padding: 4px 12px; border-radius: 16px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; font-family: 'Cinzel', serif; letter-spacing: 0.05em; transition: all 0.2s; }
-    .lang-btn.active { background: var(--purple); color: white; }
-
-    /* LANDING */
-    #landing { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.5rem 2rem; text-align: center; }
-    .orb { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c084fc, #7c3aed 50%, #2d1060); margin: 0 auto 1.5rem; animation: float 6s ease-in-out infinite; box-shadow: 0 0 40px rgba(124,58,237,0.4), 0 0 80px rgba(124,58,237,0.15), inset 0 0 30px rgba(255,255,255,0.1); position: relative; }
-    .orb::after { content: ''; position: absolute; top: 15%; left: 20%; width: 30%; height: 20%; border-radius: 50%; background: rgba(255,255,255,0.25); filter: blur(4px); }
-    .logo { font-family: 'Cinzel', serif; font-size: clamp(2rem,6vw,3.2rem); font-weight: 600; letter-spacing: 0.08em; background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--purple-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.4rem; }
-    .tagline { font-size: 1rem; color: var(--muted); font-style: italic; margin-bottom: 1.5rem; }
-
-    /* CATEGORY TABS */
-    .cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; }
-    .cat-tab { padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px; background: transparent; color: var(--muted); font-family: 'Crimson Pro', serif; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-    .cat-tab:hover { border-color: var(--purple); color: var(--purple-light); }
-    .cat-tab.active { border-color: var(--purple); background: rgba(155,109,255,0.15); color: var(--purple-light); }
-    .cat-tab .cat-icon { margin-right: 4px; }
-
-    .form-card { width: 100%; max-width: 500px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
-    .field { margin-bottom: 1.25rem; }
-    .field label { display: block; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
-    .field input, .field textarea, .field select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 1rem; color: var(--text); font-family: 'Crimson Pro', serif; font-size: 1rem; transition: border-color 0.2s; outline: none; }
-    .field input:focus, .field textarea:focus, .field select:focus { border-color: rgba(155,109,255,0.5); background: rgba(155,109,255,0.05); }
-    .field select option { background: #120d1e; }
-    .field textarea { resize: none; height: 75px; }
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    .sign-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-    .sign-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--muted); font-family: 'Crimson Pro', serif; }
-    .sign-btn:hover { border-color: var(--purple); color: var(--purple-light); }
-    .sign-btn.active { border-color: var(--purple); background: rgba(155,109,255,0.15); color: var(--purple-light); }
-    .sign-btn .icon { font-size: 1.3rem; display: block; margin-bottom: 2px; }
-    .sign-btn .name { font-size: 0.6rem; letter-spacing: 0.03em; }
-
-    /* COFFEE UPLOAD */
-    .upload-area { border: 1px dashed rgba(155,109,255,0.4); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
-    .upload-area:hover { border-color: var(--purple); background: rgba(155,109,255,0.05); }
-    .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .upload-text { font-size: 0.9rem; color: var(--muted); }
-    .upload-text span { color: var(--purple-light); }
-    .photo-previews { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
-    .photo-thumb { aspect-ratio: 1; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--border); }
-    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .photo-thumb .remove-btn { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.7); border: none; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-    .free-note { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
-    .cta { width: 100%; padding: 1rem; background: linear-gradient(135deg,#7c3aed,#5b21b6); border: none; border-radius: 12px; color: white; font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-    .cta::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(255,255,255,0.1),transparent); opacity: 0; transition: opacity 0.2s; }
-    .cta:hover::before { opacity: 1; }
-    .cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
-    .cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    /* RESULT */
-    #result { display: none; min-height: 100vh; padding: 3rem 1.5rem; animation: fade-in 0.5s ease; }
-    .result-inner { max-width: 540px; margin: 0 auto; }
-    .result-header { text-align: center; margin-bottom: 2rem; }
-    .result-orb { width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060); margin: 0 auto 1rem; box-shadow: 0 0 30px rgba(124,58,237,0.4); animation: float 6s ease-in-out infinite; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
-    .result-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--gold-light); margin-bottom: 0.3rem; }
-    .result-subtitle { font-size: 0.85rem; color: var(--muted); font-style: italic; }
-    .divider { height: 1px; background: linear-gradient(90deg,transparent,var(--border),transparent); margin: 1.25rem 0; }
-    .section-title { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.5rem; }
-    .section-text { font-size: 1rem; color: var(--text); line-height: 1.8; font-weight: 300; }
-    .prophecy { background: rgba(155,109,255,0.08); border: 1px solid rgba(155,109,255,0.2); border-radius: 12px; padding: 1.2rem 1.5rem; font-style: italic; color: var(--purple-light); font-size: 1rem; line-height: 1.8; text-align: center; }
-    .loading-section { text-align: center; padding: 2rem 0; }
-    .loading-orb { width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle at 35% 30%,#c084fc,#7c3aed); margin: 0 auto 1.5rem; animation: pulse-orb 1.5s ease-in-out infinite; }
-    .loading-text { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.15em; color: var(--muted); animation: twinkle 2s ease-in-out infinite; }
-    .action-row { display: flex; gap: 10px; margin-top: 1.5rem; }
-    .btn-secondary { flex: 1; padding: 0.75rem; background: transparent; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-family: 'Crimson Pro', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
-    .btn-secondary:hover { border-color: var(--purple); color: var(--purple-light); }
-    .btn-primary-sm { flex: 1; padding: 0.75rem; background: linear-gradient(135deg,#7c3aed,#5b21b6); border: none; border-radius: 10px; color: white; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; }
-    .btn-primary-sm:hover { opacity: 0.9; }
-    .disclaimer { text-align: center; font-size: 0.75rem; color: var(--muted); font-style: italic; margin-top: 2rem; opacity: 0.6; }
-
-    /* HIDDEN SECTIONS */
-    .cat-section { display: none; }
-    .cat-section.active { display: block; }
-
-    @media(max-width:480px) { .form-card{padding:1.25rem} .row-2{grid-template-columns:1fr} }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--bg:#0a0612;--surface:#120d1e;--border:rgba(180,140,255,0.15);--purple:#9b6dff;--purple-light:#c4a0ff;--gold:#d4af70;--gold-light:#f0d090;--text:#e8e0f0;--muted:#8878a0;}
+    html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:18px;line-height:1.7;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(100,50,180,0.12) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(60,20,120,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;}
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s);opacity:var(--op,0.4);}
+    @keyframes twinkle{0%,100%{opacity:var(--op,0.4);}50%{opacity:0.1;}}
+    .page{position:relative;z-index:1;}
+    .top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem 0;}
+    .nav-tabs{display:flex;gap:8px;}
+    .nav-tab{padding:6px 18px;background:transparent;border:1px solid var(--border);border-radius:20px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;cursor:pointer;color:var(--muted);transition:all 0.2s;}
+    .nav-tab.active{border-color:var(--purple);color:var(--purple-light);background:rgba(155,109,255,0.1);}
+    .lang-toggle{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+    .lang-btn{padding:4px 14px;font-family:'Cinzel',serif;font-size:0.65rem;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;}
+    .lang-btn.active{background:rgba(155,109,255,0.3);color:var(--purple-light);}
+    #landing{min-height:calc(100vh - 60px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem 1.5rem 2rem;text-align:center;}
+    .orb{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060);margin:0 auto 1.25rem;animation:float 6s ease-in-out infinite;box-shadow:0 0 40px rgba(124,58,237,0.4),0 0 80px rgba(124,58,237,0.15);}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+    .logo{font-family:'Cinzel',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:600;letter-spacing:0.08em;background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--purple-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
+    .tagline{font-size:0.95rem;color:var(--muted);font-style:italic;margin-bottom:1.25rem;}
+    .cat-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap;justify-content:center;}
+    .cat-tab{padding:7px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;cursor:pointer;color:var(--muted);transition:all 0.2s;white-space:nowrap;}
+    .cat-tab:hover,.cat-tab.active{border-color:var(--purple);color:var(--purple-light);}
+    .cat-tab.active{background:rgba(155,109,255,0.15);}
+    .form-card{width:100%;max-width:500px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.5rem;}
+    .field{margin-bottom:1.1rem;}
+    .field label{display:block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
+    .field input,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:0.65rem 1rem;color:var(--text);font-family:'Crimson Pro',serif;font-size:1rem;outline:none;transition:border-color 0.2s;}
+    .field input:focus,.field textarea:focus{border-color:rgba(155,109,255,0.5);background:rgba(155,109,255,0.05);}
+    .field textarea{resize:none;height:72px;}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .sign-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+    .sign-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:6px 3px;cursor:pointer;text-align:center;transition:all 0.2s;color:var(--muted);font-family:'Crimson Pro',serif;}
+    .sign-btn:hover,.sign-btn.active{border-color:var(--purple);color:var(--purple-light);}
+    .sign-btn.active{background:rgba(155,109,255,0.15);}
+    .sign-btn .icon{font-size:1.1rem;display:block;}
+    .sign-btn .name{font-size:0.55rem;}
+    .upload-zone{border:2px dashed rgba(155,109,255,0.3);border-radius:12px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+    .upload-zone:hover{border-color:var(--purple);background:rgba(155,109,255,0.05);}
+    .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upload-text{font-size:0.85rem;color:var(--muted);}
+    .upload-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+    .preview-wrap{position:relative;}
+    .preview-img{width:65px;height:65px;object-fit:cover;border-radius:8px;border:1px solid var(--border);display:block;}
+    .preview-rm{position:absolute;top:-6px;right:-6px;background:#7c3aed;color:white;width:16px;height:16px;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;border:none;}
+    .free-note{text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:0.9rem;font-style:italic;}
+    .cta{width:100%;padding:0.9rem;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;color:white;font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;}
+    .cta:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(124,58,237,0.4);}
+    .cta:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    #result{display:none;min-height:100vh;padding:2rem 1.5rem 3rem;}
+    .result-inner{max-width:520px;margin:0 auto;}
+    .result-header{text-align:center;margin-bottom:1.75rem;}
+    .result-orb{width:65px;height:65px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed 50%,#2d1060);margin:0 auto 0.9rem;box-shadow:0 0 30px rgba(124,58,237,0.4);animation:float 6s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+    .result-title{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold-light);margin-bottom:0.2rem;}
+    .result-subtitle{font-size:0.82rem;color:var(--muted);font-style:italic;}
+    .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:1.1rem 0;}
+    .section-title{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
+    .section-text{font-size:0.98rem;color:var(--text);line-height:1.8;font-weight:300;}
+    .prophecy{background:rgba(155,109,255,0.08);border:1px solid rgba(155,109,255,0.2);border-radius:12px;padding:1.1rem 1.3rem;font-style:italic;color:var(--purple-light);font-size:0.98rem;line-height:1.8;text-align:center;}
+    .loading-section{text-align:center;padding:2rem 0;}
+    .loading-orb{width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c084fc,#7c3aed);margin:0 auto 1.25rem;animation:pulse-orb 1.5s ease-in-out infinite;}
+    @keyframes pulse-orb{0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(124,58,237,0.4);}50%{transform:scale(1.1);box-shadow:0 0 40px rgba(124,58,237,0.6);}}
+    .loading-text{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.15em;color:var(--muted);animation:fade-text 2s ease-in-out infinite;}
+    @keyframes fade-text{0%,100%{opacity:0.4;}50%{opacity:1;}}
+    .action-row{display:flex;gap:10px;margin-top:1.25rem;}
+    .btn-sec{flex:1;padding:0.7rem;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Crimson Pro',serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;}
+    .btn-sec:hover{border-color:var(--purple);color:var(--purple-light);}
+    .btn-pri{flex:1;padding:0.7rem;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:10px;color:white;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;cursor:pointer;}
+    #history-section{max-width:500px;margin:0 auto;padding:1.5rem;display:none;}
+    .history-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);margin-bottom:1rem;text-align:center;}
+    .history-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.7rem;cursor:pointer;transition:border-color 0.2s;}
+    .history-item:hover{border-color:var(--purple);}
+    .history-meta{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);margin-bottom:0.25rem;}
+    .history-preview{font-size:0.88rem;color:var(--text);opacity:0.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .disclaimer{text-align:center;font-size:0.72rem;color:var(--muted);font-style:italic;margin-top:1.25rem;opacity:0.6;}
+    .card-count-row{display:flex;gap:8px;justify-content:center;margin-bottom:0.75rem;flex-wrap:wrap;}
+    .count-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
+    .count-btn:hover,.count-btn.active{border-color:var(--purple);background:rgba(155,109,255,0.2);color:var(--purple-light);}
+    .tarot-spread{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:1rem 0;}
+    .tarot-card{flex:0 0 auto;width:90px;border-radius:10px;border:1px solid rgba(212,175,112,0.35);background:linear-gradient(160deg,#1a1030,#0e0820);overflow:hidden;cursor:pointer;transition:transform 0.2s;}
+    .tarot-card:hover{transform:translateY(-5px);}
+    .card-back{width:100%;aspect-ratio:0.65;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .card-back-inner{width:65%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(212,175,112,0.3);display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+    .card-back-label{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.1em;color:rgba(212,175,112,0.45);margin-top:6px;text-transform:uppercase;}
+    .card-front{width:100%;aspect-ratio:0.65;display:none;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 5px;background:linear-gradient(160deg,#1e1040,#120830);}
+    .tarot-card.revealed .card-back{display:none;}.tarot-card.revealed .card-front{display:flex;}
+    .card-symbol{font-size:1.8rem;margin:auto 0;}
+    .card-name{font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.06em;color:var(--gold);text-align:center;text-transform:uppercase;padding:3px 0;}
+    .card-pos{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.08em;color:var(--muted);text-align:center;margin-top:4px;text-transform:uppercase;}
+    .card-meaning-text{font-size:0.82rem;color:var(--text);line-height:1.75;font-weight:300;margin-top:0.4rem;}
+    .reveal-hint{font-size:0.72rem;color:var(--muted);text-align:center;font-style:italic;margin:0.25rem 0 0.75rem;}
   </style>
 </head>
 <body>
 <div class="stars" id="stars"></div>
-
-<!-- LANG TOGGLE -->
-<div class="lang-toggle">
-  <button class="lang-btn active" onclick="setLang('en')">EN</button>
-  <button class="lang-btn" onclick="setLang('tr')">TR</button>
-</div>
-
 <div class="page">
-  <!-- LANDING -->
+  <div class="top-bar">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('home')" id="tab-home">Fal Bak</button>
+      <button class="nav-tab" onclick="showTab('history')" id="tab-history">Geçmiş</button>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('tr')" id="lang-tr">TR</button>
+      <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
+    </div>
+  </div>
+
   <section id="landing">
     <div class="orb"></div>
     <h1 class="logo">Mystic AI</h1>
-    <p class="tagline" data-en="The stars have been waiting for you" data-tr="Yıldızlar seni bekliyordu"></p>
-
-    <!-- CATEGORY TABS -->
+    <p class="tagline" id="tagline">Yıldızlar seni bekliyordu</p>
     <div class="cat-tabs">
-      <button class="cat-tab active" data-cat="zodiac" onclick="selectCat(this)"><span class="cat-icon">✦</span><span data-en="Zodiac" data-tr="Burç"></span></button>
-      <button class="cat-tab" data-cat="tarot" onclick="selectCat(this)"><span class="cat-icon">🃏</span><span data-en="Tarot" data-tr="Tarot"></span></button>
-      <button class="cat-tab" data-cat="numerology" onclick="selectCat(this)"><span class="cat-icon">🔢</span><span data-en="Numerology" data-tr="Numeroloji"></span></button>
-      <button class="cat-tab" data-cat="dream" onclick="selectCat(this)"><span class="cat-icon">🌙</span><span data-en="Dream" data-tr="Rüya"></span></button>
-      <button class="cat-tab" data-cat="coffee" onclick="selectCat(this)"><span class="cat-icon">☕</span><span data-en="Coffee" data-tr="Kahve Falı"></span></button>
+      <button class="cat-tab active" onclick="setCat('zodiac')" id="cat-zodiac">♈ Burç Falı</button>
+      <button class="cat-tab" onclick="setCat('tarot')" id="cat-tarot">🃏 Tarot</button>
+      <button class="cat-tab" onclick="setCat('numerology')" id="cat-numerology">🔢 Numeroloji</button>
+      <button class="cat-tab" onclick="setCat('dream')" id="cat-dream">🌙 Rüya</button>
+      <button class="cat-tab" onclick="setCat('coffee')" id="cat-coffee">☕ Kahve Falı</button>
     </div>
-
     <div class="form-card">
-      <!-- COMMON FIELDS -->
-      <div class="field">
-        <label data-en="Your name" data-tr="Adın"></label>
-        <input id="name" type="text" autocomplete="off" />
+      <div class="field"><label id="lbl-name">İsmin</label><input id="name" type="text" placeholder="örn. Ayşe" autocomplete="off" /></div>
+      <div class="row2">
+        <div class="field"><label id="lbl-bdate">Doğum Tarihi</label><input id="birthdate" type="date" /></div>
+        <div class="field"><label id="lbl-btime">Doğum Saati</label><input id="birthtime" type="time" /></div>
       </div>
-
-      <!-- ZODIAC -->
-      <div class="cat-section active" id="sec-zodiac">
-        <div class="field">
-          <label data-en="Your zodiac sign" data-tr="Burcun"></label>
-          <div class="sign-grid" id="sign-grid">
-            <button class="sign-btn" data-sign="Aries"><span class="icon">♈</span><span class="name" data-en="Aries" data-tr="Koç"></span></button>
-            <button class="sign-btn" data-sign="Taurus"><span class="icon">♉</span><span class="name" data-en="Taurus" data-tr="Boğa"></span></button>
-            <button class="sign-btn" data-sign="Gemini"><span class="icon">♊</span><span class="name" data-en="Gemini" data-tr="İkizler"></span></button>
-            <button class="sign-btn" data-sign="Cancer"><span class="icon">♋</span><span class="name" data-en="Cancer" data-tr="Yengeç"></span></button>
-            <button class="sign-btn" data-sign="Leo"><span class="icon">♌</span><span class="name" data-en="Leo" data-tr="Aslan"></span></button>
-            <button class="sign-btn" data-sign="Virgo"><span class="icon">♍</span><span class="name" data-en="Virgo" data-tr="Başak"></span></button>
-            <button class="sign-btn" data-sign="Libra"><span class="icon">♎</span><span class="name" data-en="Libra" data-tr="Terazi"></span></button>
-            <button class="sign-btn" data-sign="Scorpio"><span class="icon">♏</span><span class="name" data-en="Scorpio" data-tr="Akrep"></span></button>
-            <button class="sign-btn" data-sign="Sagittarius"><span class="icon">♐</span><span class="name" data-en="Sagitt." data-tr="Yay"></span></button>
-            <button class="sign-btn" data-sign="Capricorn"><span class="icon">♑</span><span class="name" data-en="Capric." data-tr="Oğlak"></span></button>
-            <button class="sign-btn" data-sign="Aquarius"><span class="icon">♒</span><span class="name" data-en="Aquar." data-tr="Kova"></span></button>
-            <button class="sign-btn" data-sign="Pisces"><span class="icon">♓</span><span class="name" data-en="Pisces" data-tr="Balık"></span></button>
-          </div>
+      <div class="field" id="sign-field">
+        <label id="lbl-sign">Burcun</label>
+        <div class="sign-grid" id="sign-grid">
+          <button class="sign-btn" data-tr="Koç" data-en="Aries"><span class="icon">♈</span><span class="name">Koç</span></button>
+          <button class="sign-btn" data-tr="Boğa" data-en="Taurus"><span class="icon">♉</span><span class="name">Boğa</span></button>
+          <button class="sign-btn" data-tr="İkizler" data-en="Gemini"><span class="icon">♊</span><span class="name">İkizler</span></button>
+          <button class="sign-btn" data-tr="Yengeç" data-en="Cancer"><span class="icon">♋</span><span class="name">Yengeç</span></button>
+          <button class="sign-btn" data-tr="Aslan" data-en="Leo"><span class="icon">♌</span><span class="name">Aslan</span></button>
+          <button class="sign-btn" data-tr="Başak" data-en="Virgo"><span class="icon">♍</span><span class="name">Başak</span></button>
+          <button class="sign-btn" data-tr="Terazi" data-en="Libra"><span class="icon">♎</span><span class="name">Terazi</span></button>
+          <button class="sign-btn" data-tr="Akrep" data-en="Scorpio"><span class="icon">♏</span><span class="name">Akrep</span></button>
+          <button class="sign-btn" data-tr="Yay" data-en="Sagittarius"><span class="icon">♐</span><span class="name">Yay</span></button>
+          <button class="sign-btn" data-tr="Oğlak" data-en="Capricorn"><span class="icon">♑</span><span class="name">Oğlak</span></button>
+          <button class="sign-btn" data-tr="Kova" data-en="Aquarius"><span class="icon">♒</span><span class="name">Kova</span></button>
+          <button class="sign-btn" data-tr="Balık" data-en="Pisces"><span class="icon">♓</span><span class="name">Balık</span></button>
         </div>
       </div>
-
-      <!-- TAROT -->
-      <div class="cat-section" id="sec-tarot">
-        <div class="field">
-          <label data-en="What area of life?" data-tr="Hayatın hangi alanı?"></label>
-          <select id="tarot-area">
-            <option value="general" data-en="General reading" data-tr="Genel okuma"></option>
-            <option value="love" data-en="Love & relationships" data-tr="Aşk ve ilişkiler"></option>
-            <option value="career" data-en="Career & money" data-tr="Kariyer ve para"></option>
-            <option value="future" data-en="Near future" data-tr="Yakın gelecek"></option>
-          </select>
+      <div class="field" id="tarot-count-field" style="display:none;">
+        <label id="lbl-cardcount">Kaç Kart Çekilsin?</label>
+        <div class="card-count-row">
+          <button class="count-btn" data-count="1" onclick="setCardCount(1)">1</button>
+          <button class="count-btn active" data-count="3" onclick="setCardCount(3)">3</button>
+          <button class="count-btn" data-count="5" onclick="setCardCount(5)">5</button>
         </div>
       </div>
-
-      <!-- NUMEROLOGY -->
-      <div class="cat-section" id="sec-numerology">
-        <div class="row-2">
-          <div class="field">
-            <label data-en="Birth date" data-tr="Doğum tarihi"></label>
-            <input id="birth-date" type="date" />
-          </div>
-          <div class="field">
-            <label data-en="Birth time (optional)" data-tr="Doğum saati (opsiyonel)"></label>
-            <input id="birth-time" type="time" />
-          </div>
-        </div>
-        <div class="field">
-          <label data-en="Birth city" data-tr="Doğum şehri"></label>
-          <input id="birth-city" type="text" placeholder="e.g. Istanbul" />
-        </div>
+      <div class="field" id="dream-field" style="display:none;"><label id="lbl-dream">Rüyanı Anlat</label><textarea id="dream-input" placeholder="Rüyanda ne gördüğünü detaylıca anlat..."></textarea></div>
+      <div class="field" id="coffee-field" style="display:none;">
+        <label id="lbl-coffee">Kahve Fincanı Fotoğrafı (max 6)</label>
+        <div class="upload-zone"><input type="file" id="coffee-input" accept="image/*" multiple onchange="handleImages(event)" /><div style="font-size:1.8rem;margin-bottom:0.4rem;">☕</div><p class="upload-text" id="upload-text">Fincanın fotoğrafını yükle veya tıkla</p></div>
+        <div class="upload-preview" id="upload-preview"></div>
       </div>
-
-      <!-- DREAM -->
-      <div class="cat-section" id="sec-dream">
-        <div class="field">
-          <label data-en="Describe your dream" data-tr="Rüyanı anlat"></label>
-          <textarea id="dream-text" rows="4" style="height:100px"></textarea>
-        </div>
-      </div>
-
-      <!-- COFFEE -->
-      <div class="cat-section" id="sec-coffee">
-        <div class="field">
-          <label data-en="Upload coffee cup photos (max 6)" data-tr="Kahve fincanı fotoğrafları yükle (max 6)"></label>
-          <div class="upload-area" id="upload-area">
-            <input type="file" id="coffee-input" accept="image/*" multiple onchange="handlePhotos(this)" />
-            <div class="upload-icon">☕</div>
-            <div class="upload-text"><span data-en="Click or drag photos here" data-tr="Fotoğrafları buraya sürükle veya tıkla"></span><br><small data-en="Up to 6 photos" data-tr="En fazla 6 fotoğraf"></small></div>
-          </div>
-          <div class="photo-previews" id="photo-previews"></div>
-        </div>
-      </div>
-
-      <!-- COMMON QUESTION -->
-      <div class="field" id="question-field">
-        <label data-en="Ask the universe (optional)" data-tr="Evrene sor (opsiyonel)"></label>
-        <textarea id="question"></textarea>
-      </div>
-
-      <p class="free-note" data-en="✦ 3 free readings today ✦" data-tr="✦ Bugün 3 ücretsiz okuma ✦"></p>
-      <button class="cta" id="cta-btn" onclick="startReading()">
-        <span data-en="Reveal My Fortune" data-tr="Falımı Göster"></span>
-      </button>
+      <div class="field" id="question-field"><label id="lbl-q">Evrene Sor (isteğe bağlı)</label><textarea id="question" placeholder="Bu yıl aşk bulacak mıyım?..."></textarea></div>
+      <p class="free-note" id="free-note">✦ Bugün 3 ücretsiz okuma ✦</p>
+      <button class="cta" id="cta-btn" onclick="startReading()">Falıma Bak ✦</button>
     </div>
-    <p class="disclaimer" data-en="For entertainment purposes only" data-tr="Yalnızca eğlence amaçlıdır"></p>
+    <p class="disclaimer">✦ Sadece eğlence amaçlıdır ✦</p>
   </section>
 
-  <!-- RESULT -->
   <section id="result">
     <div class="result-inner">
       <div class="result-header">
@@ -234,347 +176,198 @@
       </div>
       <div id="reading-content"></div>
       <div class="action-row" id="action-row" style="display:none;">
-        <button class="btn-secondary" onclick="resetForm()" data-en="Read again" data-tr="Tekrar bak"></button>
-        <button class="btn-primary-sm" onclick="shareReading()" data-en="Share reading" data-tr="Paylaş"></button>
+        <button class="btn-sec" onclick="resetForm()" id="btn-again">Tekrar Bak</button>
+        <button class="btn-pri" onclick="shareReading()" id="btn-share">Paylaş ✦</button>
       </div>
-      <p class="disclaimer" data-en="✦ For entertainment purposes only ✦" data-tr="✦ Yalnızca eğlence amaçlıdır ✦"></p>
+      <p class="disclaimer">✦ Sadece eğlence amaçlıdır ✦</p>
     </div>
+  </section>
+
+  <section id="history-section">
+    <h2 class="history-title" id="history-title">Fal Geçmişin</h2>
+    <div id="history-list"></div>
+    <p id="history-empty" style="text-align:center;color:var(--muted);font-style:italic;font-size:0.9rem;">Henüz fal baktırmadın.</p>
   </section>
 </div>
 
 <script>
-// ── STATE ──
-let lang = 'en';
-let selectedSign = '';
-let selectedCat = 'zodiac';
-let coffeePhotos = [];
+const starsEl=document.getElementById('stars');
+for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;starsEl.appendChild(s);}
 
-const signIcons = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
-
-const T = {
-  en: {
-    nameRequired: 'Please enter your name',
-    signRequired: 'Please select your zodiac sign',
-    dreamRequired: 'Please describe your dream',
-    coffeeRequired: 'Please upload at least one coffee cup photo',
-    loading: ['Reading the cosmic vibrations...', 'The stars are aligning...', 'Consulting the ancient wisdom...', 'Peering into the mists of time...'],
-    readAgain: 'Read again',
-    share: 'Share reading',
-  },
-  tr: {
-    nameRequired: 'Lütfen adını gir',
-    signRequired: 'Lütfen burcunu seç',
-    dreamRequired: 'Lütfen rüyanı anlat',
-    coffeeRequired: 'Lütfen en az bir fotoğraf yükle',
-    loading: ['Kozmik titreşimler okunuyor...', 'Yıldızlar hizalanıyor...', 'Kaderin sırları açılıyor...', 'Zamanın sislerine bakılıyor...'],
-    readAgain: 'Tekrar bak',
-    share: 'Paylaş',
-  }
+let lang='tr';
+let tarotCardCount=3;
+function setCardCount(n){tarotCardCount=n;document.querySelectorAll('.count-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.count)===n));}
+const T={
+  tr:{tagline:'Yıldızlar seni bekliyordu',tabHome:'Fal Bak',tabHist:'Geçmiş',lblName:'İsmin',lblBdate:'Doğum Tarihi',lblBtime:'Doğum Saati',lblSign:'Burcun',lblDream:'Rüyanı Anlat',lblCoffee:'Kahve Fincanı Fotoğrafı (max 6)',uploadTxt:'Fincanın fotoğrafını yükle veya tıkla',lblQ:'Evrene Sor (isteğe bağlı)',freeNote:'✦ Bugün 3 ücretsiz okuma ✦',ctaBtn:'Falıma Bak ✦',histTitle:'Fal Geçmişin',histEmpty:'Henüz fal baktırmadın.',btnAgain:'Tekrar Bak',btnShare:'Paylaş ✦',loading:'Kozmik titreşimler okunuyor...',noName:'Lütfen ismini gir',noSign:'Lütfen burcunu seç',noDream:'Lütfen rüyanı anlat',noPhoto:'Lütfen en az 1 fotoğraf yükle',copied:'Kopyalandı!',
+   cats:{zodiac:'♈ Burç Falı',tarot:'🃏 Tarot',numerology:'🔢 Numeroloji',dream:'🌙 Rüya',coffee:'☕ Kahve Falı'},
+   secs:{overall:'Genel Enerji',love:'Aşk & Kalp',money:'Para & Kariyer',advice:'Kehanet',past:'Geçmiş',present:'Şimdi',future:'Gelecek',life_number:'Yaşam Sayısı',destiny:'Kader',year:'Bu Yıl',symbols:'Semboller',message:'Rüyanın Mesajı',warning:'Uyarı'},
+   namePh:'örn. Ayşe',qPh:'Bu yıl aşk bulacak mıyım?...',dreamPh:'Rüyanda ne gördüğünü detaylıca anlat...'},
+  en:{tagline:'The stars have been waiting for you',tabHome:'Reading',tabHist:'History',lblName:'Your name',lblBdate:'Birth Date',lblBtime:'Birth Time',lblSign:'Your sign',lblDream:'Describe your dream',lblCoffee:'Coffee Cup Photo (max 6)',uploadTxt:'Upload or tap to add photos',lblQ:'Ask the universe (optional)',freeNote:'✦ 3 free readings today ✦',ctaBtn:'Reveal My Fortune ✦',histTitle:'Your Reading History',histEmpty:'No readings yet.',btnAgain:'Read again',btnShare:'Share ✦',loading:'Reading cosmic vibrations...',noName:'Please enter your name',noSign:'Please select your sign',noDream:'Please describe your dream',noPhoto:'Please upload at least 1 photo',copied:'Copied!',
+   cats:{zodiac:'♈ Zodiac',tarot:'🃏 Tarot',numerology:'🔢 Numerology',dream:'🌙 Dream',coffee:'☕ Coffee'},
+   secs:{overall:'Overall Energy',love:'Love & Heart',money:'Money & Career',advice:'The Prophecy',past:'Past',present:'Present',future:'Future',life_number:'Life Number',destiny:'Destiny',year:'This Year',symbols:'Symbols',message:'Dream Message',warning:'Warning'},
+   namePh:'e.g. Sarah',qPh:'Will I find love this year?...',dreamPh:'Describe your dream in detail...'}
 };
 
-// ── STARS ──
-const starsEl = document.getElementById('stars');
-for (let i = 0; i < 120; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.2+Math.random()*0.6};width:${Math.random()<0.8?1:2}px;height:${Math.random()<0.8?1:2}px`;
-  starsEl.appendChild(s);
+function setLang(l){
+  lang=l;
+  document.getElementById('lang-tr').classList.toggle('active',l==='tr');
+  document.getElementById('lang-en').classList.toggle('active',l==='en');
+  const t=T[l];
+  const ids={tagline:'tagline','tab-home':'tabHome','tab-history':'tabHist','lbl-name':'lblName','lbl-bdate':'lblBdate','lbl-btime':'lblBtime','lbl-sign':'lblSign','lbl-dream':'lblDream','lbl-coffee':'lblCoffee','upload-text':'uploadTxt','lbl-q':'lblQ','free-note':'freeNote','cta-btn':'ctaBtn','history-title':'histTitle','history-empty':'histEmpty','btn-again':'btnAgain','btn-share':'btnShare'};
+  Object.entries(ids).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.textContent=t[key];});
+  document.getElementById('name').placeholder=t.namePh;
+  document.getElementById('question').placeholder=t.qPh;
+  document.getElementById('dream-input').placeholder=t.dreamPh;
+  Object.keys(t.cats).forEach(k=>{const el=document.getElementById('cat-'+k);if(el)el.textContent=t.cats[k];});
+  document.querySelectorAll('.sign-btn').forEach(btn=>{btn.querySelector('.name').textContent=btn.dataset[l];});
 }
 
-// ── LANG ──
-function setLang(l) {
-  lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === l));
-  document.querySelectorAll('[data-en]').forEach(el => {
-    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-      el.placeholder = el.dataset[l] || '';
-    } else {
-      el.textContent = el.dataset[l] || '';
-    }
-  });
-  document.documentElement.lang = l;
+let currentCat='zodiac';
+function setCat(cat){
+  currentCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('cat-'+cat).classList.add('active');
+  document.getElementById('sign-field').style.display=(cat==='zodiac'||cat==='tarot')?'block':'none';
+  document.getElementById('tarot-count-field').style.display=cat==='tarot'?'block':'none';
+  document.getElementById('dream-field').style.display=cat==='dream'?'block':'none';
+  document.getElementById('coffee-field').style.display=cat==='coffee'?'block':'none';
+  document.getElementById('question-field').style.display=cat==='coffee'?'none':'block';
 }
 
-// ── CATEGORY ──
-function selectCat(btn) {
-  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedCat = btn.dataset.cat;
-  document.querySelectorAll('.cat-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('sec-' + selectedCat).classList.add('active');
-  // hide generic question for coffee (has its own)
-  document.getElementById('question-field').style.display = selectedCat === 'coffee' ? 'none' : 'block';
-}
-
-// ── SIGN SELECT ──
-document.getElementById('sign-grid').addEventListener('click', e => {
-  const btn = e.target.closest('.sign-btn');
-  if (!btn) return;
-  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedSign = btn.dataset.sign;
+let selectedSign='';
+document.getElementById('sign-grid').addEventListener('click',e=>{
+  const btn=e.target.closest('.sign-btn');if(!btn)return;
+  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');selectedSign=btn.dataset[lang];
 });
 
-// ── PHOTOS ──
-function handlePhotos(input) {
-  const files = Array.from(input.files).slice(0, 6 - coffeePhotos.length);
-  files.forEach(file => {
-    if (coffeePhotos.length >= 6) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      coffeePhotos.push({ dataUrl: e.target.result, file });
-      renderPreviews();
-    };
-    reader.readAsDataURL(file);
+let uploadedImages=[];
+function handleImages(e){
+  Array.from(e.target.files).slice(0,6-uploadedImages.length).forEach(file=>{
+    if(uploadedImages.length>=6)return;
+    const r=new FileReader();
+    r.onload=ev=>{uploadedImages.push({base64:ev.target.result.split(',')[1],type:file.type});renderPreviews();};
+    r.readAsDataURL(file);
   });
-  input.value = '';
+}
+function renderPreviews(){document.getElementById('upload-preview').innerHTML=uploadedImages.map((img,i)=>`<div class="preview-wrap"><img class="preview-img" src="data:${img.type};base64,${img.base64}"/><button class="preview-rm" onclick="removeImg(${i})">×</button></div>`).join('');}
+function removeImg(i){uploadedImages.splice(i,1);renderPreviews();}
+
+function showTab(tab){
+  document.getElementById('tab-home').classList.toggle('active',tab==='home');
+  document.getElementById('tab-history').classList.toggle('active',tab==='history');
+  document.getElementById('landing').style.display=tab==='home'?'flex':'none';
+  document.getElementById('result').style.display='none';
+  document.getElementById('history-section').style.display=tab==='history'?'block':'none';
+  if(tab==='history')renderHistory();
 }
 
-function renderPreviews() {
-  const container = document.getElementById('photo-previews');
-  container.innerHTML = coffeePhotos.map((p, i) => `
-    <div class="photo-thumb">
-      <img src="${p.dataUrl}" alt="coffee ${i+1}" />
-      <button class="remove-btn" onclick="removePhoto(${i})">×</button>
-    </div>`).join('');
+function getHist(){try{return JSON.parse(localStorage.getItem('mystic_h')||'[]');}catch{return[];}}
+function saveHist(e){const h=getHist();h.unshift(e);if(h.length>20)h.pop();localStorage.setItem('mystic_h',JSON.stringify(h));}
+function renderHistory(){
+  const h=getHist(),list=document.getElementById('history-list'),empty=document.getElementById('history-empty');
+  if(!h.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=h.map((item,i)=>`<div class="history-item" onclick="viewHist(${i})"><div class="history-meta"><span>${item.icon} ${item.cat} · ${item.name}</span><span>${item.date}</span></div><div class="history-preview">${item.preview}</div></div>`).join('');
+}
+function viewHist(i){
+  const item=getHist()[i];showTab('home');
+  document.getElementById('landing').style.display='none';document.getElementById('result').style.display='block';
+  document.getElementById('result-icon').textContent=item.icon||'🔮';document.getElementById('result-name').textContent=item.name;
+  document.getElementById('result-date').textContent=item.date;document.getElementById('reading-content').innerHTML=item.html;
+  document.getElementById('action-row').style.display='flex';
 }
 
-function removePhoto(i) {
-  coffeePhotos.splice(i, 1);
-  renderPreviews();
-}
+async function startReading(){
+  const t=T[lang],name=document.getElementById('name').value.trim(),bd=document.getElementById('birthdate').value,bt=document.getElementById('birthtime').value,q=document.getElementById('question').value.trim(),dr=document.getElementById('dream-input').value.trim();
+  if(!name){alert(t.noName);return;}
+  if((currentCat==='zodiac'||currentCat==='tarot')&&!selectedSign){alert(t.noSign);return;}
+  if(currentCat==='dream'&&!dr){alert(t.noDream);return;}
+  if(currentCat==='coffee'&&!uploadedImages.length){alert(t.noPhoto);return;}
 
-// ── BUILD PROMPT ──
-function buildPrompt(name, question) {
-  const isTR = lang === 'tr';
-  const langNote = isTR ? 'Respond entirely in Turkish.' : 'Respond in English.';
+  document.getElementById('landing').style.display='none';document.getElementById('result').style.display='block';
+  const icons={zodiac:'🔮',tarot:'🃏',numerology:'🔢',dream:'🌙',coffee:'☕'};
+  document.getElementById('result-icon').textContent=icons[currentCat];
+  document.getElementById('result-name').textContent=name+(selectedSign?' · '+selectedSign:'');
+  document.getElementById('result-date').textContent=new Date().toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('action-row').style.display='none';
+  document.getElementById('reading-content').innerHTML=`<div class="loading-section"><div class="loading-orb"></div><p class="loading-text">${t.loading}</p></div>`;
 
-  if (selectedCat === 'zodiac') {
-    return `You are Mystic AI, a powerful and poetic AI fortune teller. Give a mystical fortune reading for ${name}, a ${selectedSign}.${question ? ` Their question: "${question}"` : ''}
-${langNote}
-Respond ONLY with raw JSON, no markdown:
-{"overall":"2-3 sentences about cosmic energy","love":"2 sentences about love","money":"2 sentences about finances and career","advice":"One powerful prophecy — poetic and memorable"}
-Be dramatic, mystical, poetic. Mix optimism with mystery.`;
+  const li=lang==='tr'?'Türkçe yanıt ver.':'Reply in English.';
+  const bdi=bd?`\nDoğum: ${bd}.`:'',bti=bt?`\nDoğum saati: ${bt}.`:'',qi=q?`\nSoru: "${q}"`:'';
+  let prompt='',msgContent=null;
+
+  if(currentCat==='zodiac')prompt=`Sen Mystic AI, mistik falcısın. ${name} adında ${selectedSign} için fal bak.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"overall":"2-3 cümle","love":"1-2 cümle aşk","money":"1-2 cümle para","advice":"Kehanet"}`;
+  else if(currentCat==='tarot'){
+    const positions1=[lang==='tr'?'Mesaj':'Message'];
+    const positions3=lang==='tr'?['Geçmiş','Şimdi','Gelecek']:['Past','Present','Future'];
+    const positions5=lang==='tr'?['Geçmiş','Şimdi','Gelecek','Engel','Tavsiye']:['Past','Present','Future','Challenge','Advice'];
+    const positions=tarotCardCount===1?positions1:tarotCardCount===3?positions3:positions5;
+    const cardKeys=positions.map((_,i)=>`card${i+1}`);
+    const jsonStr=cardKeys.map((k,i)=>`"${k}":{"name":"Kart Adı","position":"${positions[i]}","symbol":"🌙","meaning":"yorum"}`).join(',');
+    prompt=`Mistik tarot falcısısın. ${name} için (${selectedSign}) ${tarotCardCount} kart çek.${bdi}${bti}${qi}\n${li}\nSadece ham JSON, her kart için emoji symbol dahil: {${jsonStr},"advice":"Genel mesaj"}`;
   }
+  else if(currentCat==='numerology')prompt=`Numeroloji uzmanısın. ${name} için analiz.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"life_number":"yaşam sayısı+açıklama","destiny":"kader+yorum","year":"bu yılın enerjisi","advice":"Kehanet"}`;
+  else if(currentCat==='dream')prompt=`Mistik rüya yorumcususun. ${name}'nin rüyası: "${dr}"${bdi}\n${li}\nSadece ham JSON: {"symbols":"Semboller","message":"Mesaj","warning":"Uyarı","advice":"Tavsiye"}`;
+  else if(currentCat==='coffee'){msgContent=[...uploadedImages.map(img=>({type:'image',source:{type:'base64',media_type:img.type,data:img.base64}})),{type:'text',text:`Kahve falı ustasısın. ${name} için fincanı yorumla.${bdi}${bti}${qi}\n${li}\nSadece ham JSON: {"symbols":"Şekiller ve anlamlar","love":"Aşk mesajı","future":"Yakın gelecek","advice":"Mistik tavsiye"}`}];}
 
-  if (selectedCat === 'tarot') {
-    const area = document.getElementById('tarot-area').value;
-    return `You are Mystic AI, a master tarot reader. Draw 3 virtual tarot cards for ${name} regarding their ${area}. ${question ? `Their question: "${question}"` : ''}
-${langNote}
-Respond ONLY with raw JSON:
-{"card1":{"name":"card name","position":"Past","meaning":"2 sentences"},"card2":{"name":"card name","position":"Present","meaning":"2 sentences"},"card3":{"name":"card name","position":"Future","meaning":"2 sentences"},"overall":"2 sentences synthesizing all three cards","advice":"One final prophecy"}`;
-  }
-
-  if (selectedCat === 'numerology') {
-    const bd = document.getElementById('birth-date').value;
-    const bt = document.getElementById('birth-time').value;
-    const bc = document.getElementById('birth-city').value;
-    return `You are Mystic AI, a numerology expert. Calculate and interpret the numerology reading for ${name}, born on ${bd}${bt ? ' at ' + bt : ''}${bc ? ' in ' + bc : ''}.
-${langNote}
-Respond ONLY with raw JSON:
-{"lifePathNumber":{"number":"X","meaning":"2-3 sentences"},"destinyNumber":{"number":"X","meaning":"2 sentences"},"soulNumber":{"number":"X","meaning":"2 sentences"},"advice":"One powerful numerological prophecy"}`;
-  }
-
-  if (selectedCat === 'dream') {
-    const dream = document.getElementById('dream-text').value;
-    return `You are Mystic AI, a dream interpreter with ancient wisdom. Interpret this dream for ${name}: "${dream}"
-${langNote}
-Respond ONLY with raw JSON:
-{"symbols":"2-3 sentences about the key dream symbols","subconscious":"2 sentences about what the subconscious is communicating","guidance":"2 sentences of spiritual guidance","prophecy":"One powerful dream prophecy"}`;
-  }
-
-  return '';
-}
-
-// ── BUILD MESSAGES (with images for coffee) ──
-async function buildMessages(name) {
-  if (selectedCat === 'coffee') {
-    const isTR = lang === 'tr';
-    const langNote = isTR ? 'Respond entirely in Turkish.' : 'Respond in English.';
-    const question = document.getElementById('question') ? document.getElementById('question').value : '';
-    const content = [
-      ...coffeePhotos.map(p => ({
-        type: 'image',
-        source: { type: 'base64', media_type: 'image/jpeg', data: p.dataUrl.split(',')[1] }
-      })),
-      { type: 'text', text: `You are Mystic AI, a legendary Turkish coffee cup reader (tasseography expert). Analyze these coffee cup photos for ${name}.${question ? ` Their question: "${question}"` : ''}
-${langNote}
-Respond ONLY with raw JSON:
-{"symbols":"Describe the shapes and symbols you see in the coffee grounds (2-3 sentences)","past":"What the cup reveals about the past (2 sentences)","present":"Current energy and situation (2 sentences)","future":"What the future holds based on the grounds (2-3 sentences)","prophecy":"One powerful Turkish coffee prophecy"}` }
-    ];
-    return [{ role: 'user', content }];
-  }
-  const prompt = buildPrompt(name, document.getElementById('question')?.value || '');
-  return [{ role: 'user', content: prompt }];
-}
-
-// ── RENDER RESULT ──
-function renderResult(data, cat) {
-  try {
-    const r = JSON.parse(data.replace(/```json|```/g, '').trim());
-    const isTR = lang === 'tr';
-
-    if (cat === 'zodiac') {
-      return `
-        <div class="divider"></div>
-        <div class="section-title">${isTR ? 'Genel Enerji' : 'Overall energy'}</div>
-        <p class="section-text">${r.overall}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Aşk' : 'Love & heart'}</div>
-        <p class="section-text">${r.love}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Para & Kariyer' : 'Abundance & career'}</div>
-        <p class="section-text">${r.money}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
-        <div class="prophecy">"${r.advice}"</div>`;
-    }
-
-    if (cat === 'tarot') {
-      return `
-        <div class="divider"></div>
-        ${['card1','card2','card3'].map(k => `
-          <div class="section-title">${r[k].position} — ${r[k].name}</div>
-          <p class="section-text">${r[k].meaning}</p>
-          <div class="divider"></div>`).join('')}
-        <div class="section-title">${isTrue ? 'Genel Mesaj' : 'Overall message'}</div>
-        <p class="section-text">${r.overall}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
-        <div class="prophecy">"${r.advice}"</div>`;
-    }
-
-    if (cat === 'numerology') {
-      return `
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Yaşam Yolu Sayısı' : 'Life path number'}: ${r.lifePathNumber.number}</div>
-        <p class="section-text">${r.lifePathNumber.meaning}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kader Sayısı' : 'Destiny number'}: ${r.destinyNumber.number}</div>
-        <p class="section-text">${r.destinyNumber.meaning}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Ruh Sayısı' : 'Soul number'}: ${r.soulNumber.number}</div>
-        <p class="section-text">${r.soulNumber.meaning}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
-        <div class="prophecy">"${r.advice}"</div>`;
-    }
-
-    if (cat === 'dream') {
-      return `
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Semboller' : 'Dream symbols'}</div>
-        <p class="section-text">${r.symbols}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Bilinçaltı' : 'Subconscious message'}</div>
-        <p class="section-text">${r.subconscious}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Rehberlik' : 'Spiritual guidance'}</div>
-        <p class="section-text">${r.guidance}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
-        <div class="prophecy">"${r.prophecy}"</div>`;
-    }
-
-    if (cat === 'coffee') {
-      return `
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Görülen Semboller' : 'Symbols in the cup'}</div>
-        <p class="section-text">${r.symbols}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Geçmiş' : 'The past'}</div>
-        <p class="section-text">${r.past}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Şu An' : 'Present energy'}</div>
-        <p class="section-text">${r.present}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Gelecek' : 'What awaits you'}</div>
-        <p class="section-text">${r.future}</p>
-        <div class="divider"></div>
-        <div class="section-title">${isTrue ? 'Kehanet' : 'The prophecy'}</div>
-        <div class="prophecy">"${r.prophecy}"</div>`;
-    }
-  } catch(e) {
-    return `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Bağlantı kesildi, tekrar dene.':'The cosmic connection was interrupted. Please try again.'}</p>`;
+  try{
+    const body=msgContent?{messages:[{role:'user',content:msgContent}]}:{prompt};
+    const res=await fetch('/api/fortune',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    const reading=JSON.parse(data.text.replace(/```json|```/g,'').trim());
+    const html=buildHTML(reading);
+    document.getElementById('reading-content').innerHTML=html;
+    document.getElementById('action-row').style.display='flex';
+    saveHist({cat:t.cats[currentCat],name:name+(selectedSign?' · '+selectedSign:''),date:new Date().toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{day:'numeric',month:'short',year:'numeric'}),icon:icons[currentCat],preview:document.getElementById('reading-content').innerText.slice(0,100),html});
+  }catch(e){
+    document.getElementById('reading-content').innerHTML=`<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Kozmik bağlantı kesildi. Tekrar dene.':'Connection interrupted. Try again.'}</p>`;
+    document.getElementById('action-row').style.display='flex';
   }
 }
 
-// ── START READING ──
-async function startReading() {
-  const name = document.getElementById('name').value.trim();
-  if (!name) { alert(T[lang].nameRequired); return; }
-  if (selectedCat === 'zodiac' && !selectedSign) { alert(T[lang].signRequired); return; }
-  if (selectedCat === 'dream' && !document.getElementById('dream-text').value.trim()) { alert(T[lang].dreamRequired); return; }
-  if (selectedCat === 'coffee' && coffeePhotos.length === 0) { alert(T[lang].coffeeRequired); return; }
-
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('result').style.display = 'block';
-  window.scrollTo(0,0);
-
-  const catIcons = { zodiac: signIcons[selectedSign] || '✦', tarot: '🃏', numerology: '🔢', dream: '🌙', coffee: '☕' };
-  document.getElementById('result-icon').textContent = catIcons[selectedCat];
-  document.getElementById('result-name').textContent = name + (selectedSign ? ' · ' + selectedSign : '');
-  document.getElementById('result-date').textContent = new Date().toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  document.getElementById('action-row').style.display = 'none';
-
-  const loadingTexts = T[lang].loading;
-  let loadIdx = 0;
-  const loadingInterval = setInterval(() => { loadIdx = (loadIdx+1) % loadingTexts.length; const lt = document.getElementById('loading-msg'); if(lt) lt.textContent = loadingTexts[loadIdx]; }, 2000);
-
-  document.getElementById('reading-content').innerHTML = `
-    <div class="loading-section">
-      <div class="loading-orb"></div>
-      <p class="loading-text" id="loading-msg">${loadingTexts[0]}</p>
-    </div>`;
-
-  try {
-    const messages = await buildMessages(name);
-    const res = await fetch('/api/fortune', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages, hasCoffeeImages: selectedCat === 'coffee' })
-    });
-    const data = await res.json();
-    clearInterval(loadingInterval);
-    const html = renderResult(data.text, selectedCat);
-    document.getElementById('reading-content').innerHTML = html;
-    document.getElementById('action-row').style.display = 'flex';
-    document.querySelector('#action-row .btn-secondary').textContent = T[lang].readAgain;
-    document.querySelector('#action-row .btn-primary-sm').textContent = T[lang].share;
-  } catch(e) {
-    clearInterval(loadingInterval);
-    document.getElementById('reading-content').innerHTML = `<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Bağlantı kesildi, tekrar dene.':'Connection lost. Please try again.'}</p>`;
-    document.getElementById('action-row').style.display = 'flex';
+function buildHTML(r){
+  const S=T[lang].secs;
+  if(currentCat==='tarot'){
+    const cardKeys=Object.keys(r).filter(k=>k.startsWith('card'));
+    const cards=cardKeys.map((k,i)=>{
+      const c=r[k];
+      return`<div class="tarot-card" id="tc-${i}" onclick="revealCard(${i},'${k}')">
+        <div class="card-back"><div class="card-back-inner">✦</div><div class="card-back-label">${lang==='tr'?'Tıkla':'Tap'}</div></div>
+        <div class="card-front"><div class="card-name">${c.name||''}</div><div class="card-symbol">${c.symbol||'🌙'}</div><div class="card-name">${c.position||''}</div></div>
+      </div>`;
+    }).join('');
+    const meanings=cardKeys.map((k,i)=>`<div id="meaning-${i}" style="display:none;"><div class="divider"></div><div class="section-title">${r[k].position||k} — ${r[k].name||''}</div><p class="card-meaning-text">${r[k].meaning||''}</p></div>`).join('');
+    const advice=r.advice?`<div class="divider"></div><div class="section-title">${S.advice||'Kehanet'}</div><div class="prophecy">"${r.advice}"</div>`:'';
+    return`<div class="tarot-spread">${cards}</div><p class="reveal-hint">${lang==='tr'?'Kartlara tıkla, sırlarını öğren ✦':'Tap each card to reveal its secret ✦'}</p>${meanings}${advice}`;
   }
+  return Object.keys(r).map((k,i)=>{
+    const label=S[k]||k;
+    if(k==='advice')return`<div class="divider"></div><div class="section-title">${label}</div><div class="prophecy">"${r[k]}"</div>`;
+    return`${i>0?'<div class="divider"></div>':''}<div class="section-title">${label}</div><p class="section-text">${r[k]}</p>`;
+  }).join('');
 }
 
-function resetForm() {
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('landing').style.display = 'flex';
-  coffeePhotos = [];
-  document.getElementById('photo-previews').innerHTML = '';
-  document.getElementById('name').value = '';
-  if(document.getElementById('question')) document.getElementById('question').value = '';
-  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
-  selectedSign = '';
-  window.scrollTo(0,0);
+function revealCard(i,key){
+  const card=document.getElementById('tc-'+i);
+  if(!card)return;
+  card.classList.add('revealed');
+  const meaning=document.getElementById('meaning-'+i);
+  if(meaning)meaning.style.display='block';
 }
 
-function shareReading() {
-  const text = document.getElementById('reading-content').innerText;
-  const url = window.location.href;
-  if (navigator.share) {
-    navigator.share({ title: 'Mystic AI Reading', text, url });
-  } else {
-    navigator.clipboard.writeText('My Mystic AI Reading:\n\n' + text + '\n\n' + url)
-      .then(() => alert(lang === 'tr' ? 'Kopyalandı!' : 'Copied!'));
-  }
+function resetForm(){
+  document.getElementById('result').style.display='none';document.getElementById('landing').style.display='flex';
+  document.getElementById('name').value='';document.getElementById('question').value='';document.getElementById('dream-input').value='';
+  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
+  selectedSign='';uploadedImages=[];document.getElementById('upload-preview').innerHTML='';
 }
 
-// Init lang
-setLang('en');
-// Fix isTrue references in renderResult
-const isTrue = false;
+function shareReading(){
+  const text=document.getElementById('reading-content').innerText;
+  if(navigator.share)navigator.share({title:'Mystic AI',text,url:window.location.href});
+  else navigator.clipboard.writeText('Mystic AI:\n\n'+text+'\n\n'+window.location.href).then(()=>alert(T[lang].copied));
+}
 </script>
 </body>
 </html>
