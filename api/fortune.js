@@ -1,8 +1,10 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { messages, hasCoffeeImages } = req.body;
-  if (!messages) return res.status(400).json({ error: 'Missing messages' });
+  const { messages, prompt } = req.body;
+
+  const finalMessages = messages || [{ role: 'user', content: prompt }];
+  if (!finalMessages?.length) return res.status(400).json({ error: 'Missing input' });
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -16,7 +18,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'anthropic/claude-haiku-4-5',
         max_tokens: 1200,
-        messages
+        messages: finalMessages
       })
     });
 
