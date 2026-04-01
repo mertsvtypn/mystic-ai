@@ -83,18 +83,23 @@
     .card-count-row{display:flex;gap:8px;justify-content:center;margin-bottom:0.75rem;flex-wrap:wrap;}
     .count-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
     .count-btn:hover,.count-btn.active{border-color:var(--purple);background:rgba(155,109,255,0.2);color:var(--purple-light);}
-    .tarot-spread{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:1rem 0;}
-    .tarot-card{flex:0 0 auto;width:90px;border-radius:10px;border:1px solid rgba(212,175,112,0.35);background:linear-gradient(160deg,#1a1030,#0e0820);overflow:hidden;cursor:pointer;transition:transform 0.2s;}
-    .tarot-card:hover{transform:translateY(-5px);}
-    .card-back{width:100%;aspect-ratio:0.65;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-    .card-back-inner{width:65%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(212,175,112,0.3);display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
-    .card-back-label{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.1em;color:rgba(212,175,112,0.45);margin-top:6px;text-transform:uppercase;}
-    .card-front{width:100%;aspect-ratio:0.65;display:none;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 5px;background:linear-gradient(160deg,#1e1040,#120830);}
-    .tarot-card.revealed .card-back{display:none;}.tarot-card.revealed .card-front{display:flex;}
-    .card-symbol{font-size:1.8rem;margin:auto 0;}
-    .card-name{font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.06em;color:var(--gold);text-align:center;text-transform:uppercase;padding:3px 0;}
-    .card-pos{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.08em;color:var(--muted);text-align:center;margin-top:4px;text-transform:uppercase;}
-    .card-meaning-text{font-size:0.82rem;color:var(--text);line-height:1.75;font-weight:300;margin-top:0.4rem;}
+    .tarot-spread{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0.5rem;}
+    .tarot-card-wrap{perspective:1000px;flex:0 0 auto;text-align:center;}
+    .tarot-card{width:120px;aspect-ratio:0.65;position:relative;transform-style:preserve-3d;transition:transform 0.9s cubic-bezier(0.4,0,0.2,1);border-radius:12px;margin:0 auto;}
+    .tarot-card.flipped{transform:rotateY(180deg);}
+    .card-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:2px solid rgba(212,175,112,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6);}
+    .card-back-face{background:linear-gradient(160deg,#1a0f35,#0e0820);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .card-back-pattern{width:70%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(212,175,112,0.25);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+    .card-back-txt{font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:0.15em;color:rgba(212,175,112,0.4);text-transform:uppercase;}
+    .card-front-face{transform:rotateY(180deg);background:#1a1030;}
+    .card-front-face img{width:100%;height:100%;object-fit:cover;display:block;}
+    .card-info{margin-top:8px;}
+    .card-info-name{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.06em;color:var(--gold);text-transform:uppercase;margin-bottom:2px;}
+    .card-info-pos{font-family:'Cinzel',serif;font-size:0.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+    .card-meaning-block{display:none;background:rgba(155,109,255,0.06);border:1px solid rgba(155,109,255,0.15);border-radius:10px;padding:0.9rem 1rem;margin-top:0.5rem;animation:fadeUp 0.5s ease;}
+    .card-meaning-block.visible{display:block;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .card-meaning-text{font-size:0.9rem;color:var(--text);line-height:1.75;font-weight:300;}
     .reveal-hint{font-size:0.72rem;color:var(--muted);text-align:center;font-style:italic;margin:0.25rem 0 0.75rem;}
   </style>
 </head>
@@ -319,6 +324,7 @@ async function startReading(){
     const html=buildHTML(reading);
     document.getElementById('reading-content').innerHTML=html;
     document.getElementById('action-row').style.display='flex';
+    if(currentCat==='tarot'){const cardKeys=Object.keys(reading).filter(k=>k.startsWith('card'));autoRevealCards(cardKeys.length);}
     saveHist({cat:t.cats[currentCat],name:name+(selectedSign?' · '+selectedSign:''),date:new Date().toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{day:'numeric',month:'short',year:'numeric'}),icon:icons[currentCat],preview:document.getElementById('reading-content').innerText.slice(0,100),html});
   }catch(e){
     document.getElementById('reading-content').innerHTML=`<p style="color:var(--muted);text-align:center;font-style:italic;padding:2rem 0">${lang==='tr'?'Kozmik bağlantı kesildi. Tekrar dene.':'Connection interrupted. Try again.'}</p>`;
@@ -326,21 +332,71 @@ async function startReading(){
   }
 }
 
+
+const RW_CARDS = {
+  'The Fool': 'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg',
+  'The Magician': 'https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg',
+  'The High Priestess': 'https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg',
+  'The Empress': 'https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg',
+  'The Emperor': 'https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg',
+  'The Hierophant': 'https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg',
+  'The Lovers': 'https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg',
+  'The Chariot': 'https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg',
+  'Strength': 'https://upload.wikimedia.org/wikipedia/commons/f/f6/RWS_Tarot_08_Strength.jpg',
+  'The Hermit': 'https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg',
+  'Wheel of Fortune': 'https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg',
+  'Justice': 'https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg',
+  'The Hanged Man': 'https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg',
+  'Death': 'https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg',
+  'Temperance': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg',
+  'The Devil': 'https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg',
+  'The Tower': 'https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg',
+  'The Star': 'https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg',
+  'The Moon': 'https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg',
+  'The Sun': 'https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg',
+  'Judgement': 'https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg',
+  'The World': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg',
+  'Ace of Cups': 'https://upload.wikimedia.org/wikipedia/commons/3/36/Cups01.jpg',
+  'Two of Cups': 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Cups02.jpg',
+  'Three of Cups': 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Cups03.jpg',
+  'Ten of Cups': 'https://upload.wikimedia.org/wikipedia/commons/8/84/Cups10.jpg',
+  'Ace of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Pents01.jpg',
+  'Five of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/9/96/Pents05.jpg',
+  'Ten of Pentacles': 'https://upload.wikimedia.org/wikipedia/commons/4/42/Pents10.jpg',
+  'Ace of Swords': 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Swords01.jpg',
+  'Ace of Wands': 'https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg',
+  'default': 'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg'
+};
+function getCardImg(name){return RW_CARDS[name]||RW_CARDS['default'];}
+
 function buildHTML(r){
   const S=T[lang].secs;
   if(currentCat==='tarot'){
     const cardKeys=Object.keys(r).filter(k=>k.startsWith('card'));
     const cards=cardKeys.map((k,i)=>{
       const c=r[k];
-      return`<div class="tarot-card" id="tc-${i}" onclick="revealCard(${i},'${k}')">
-        <div class="card-back"><div class="card-back-inner">✦</div><div class="card-back-label">${lang==='tr'?'Tıkla':'Tap'}</div></div>
-        <div class="card-front"><div class="card-name">${c.name||''}</div><div class="card-symbol">${c.symbol||'🌙'}</div><div class="card-name">${c.position||''}</div></div>
+      const imgUrl=getCardImg(c.name||'');
+      return`<div class="tarot-card-wrap">
+        <div class="tarot-card" id="tc-${i}">
+          <div class="card-face card-back-face">
+            <div class="card-back-pattern">✦</div>
+            <div class="card-back-txt">Mystic AI</div>
+          </div>
+          <div class="card-face card-front-face">
+            <img src="${imgUrl}" alt="${c.name||''}" loading="lazy" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(160deg,#2a1060,#1a0840)'" />
+          </div>
+        </div>
+        <div class="card-info" id="info-${i}" style="display:none;">
+          <div class="card-info-name">${c.name||''}</div>
+          <div class="card-info-pos">${c.position||''}</div>
+        </div>
+        <div class="card-meaning-block" id="meaning-${i}">
+          <p class="card-meaning-text">${c.meaning||''}</p>
+        </div>
       </div>`;
     }).join('');
-    const meanings=cardKeys.map((k,i)=>`<div id="meaning-${i}" style="display:none;"><div class="divider"></div><div class="section-title">${r[k].position||k} — ${r[k].name||''}</div><p class="card-meaning-text">${r[k].meaning||''}</p></div>`).join('');
     const advice=r.advice?`<div class="divider"></div><div class="section-title">${S.advice||'Kehanet'}</div><div class="prophecy">"${r.advice}"</div>`:'';
-    setTimeout(()=>autoRevealCards(cardKeys.length),300);
-    return`<div class="tarot-spread">${cards}</div><p class="reveal-hint">${lang==='tr'?'Kartlara tıkla, sırlarını öğren ✦':'Tap each card to reveal its secret ✦'}</p>${meanings}${advice}`;
+    return`<div class="tarot-spread">${cards}</div>${advice}`;
   }
   return Object.keys(r).map((k,i)=>{
     const label=S[k]||k;
@@ -349,12 +405,27 @@ function buildHTML(r){
   }).join('');
 }
 
-function revealCard(i,key){
+function revealCard(i){
   const card=document.getElementById('tc-'+i);
-  if(!card)return;
-  card.classList.add('revealed');
-  const meaning=document.getElementById('meaning-'+i);
-  if(meaning)meaning.style.display='block';
+  if(!card||card.classList.contains('flipped'))return;
+  card.classList.add('flipped');
+  setTimeout(()=>{
+    const info=document.getElementById('info-'+i);
+    const meaning=document.getElementById('meaning-'+i);
+    if(info)info.style.display='block';
+    if(meaning)meaning.classList.add('visible');
+  },500);
+}
+
+function autoRevealCards(total){
+  let i=0;
+  function next(){
+    if(i>=total)return;
+    revealCard(i);
+    i++;
+    setTimeout(next,1200);
+  }
+  setTimeout(next,600);
 }
 
 function resetForm(){
